@@ -26,6 +26,10 @@ namespace QuickInteractions
       ResizibleLeft = false;
 
       this["layout"] = new CUIVerticalList() { Relative = new CUINullRect(0, 0, 1, 1) };
+      this["layout"]["header"] = new CUITextBlock("Interactions")
+      {
+
+      };
 
       Logger.Log($"Revealed: {Revealed}");
     }
@@ -46,7 +50,7 @@ namespace QuickInteractions
       this["layout"].RemoveAllChildren();
       foreach (Character character in QuickTalk.Interactable)
       {
-        this["layout"].Append(new QuickTalkButton()
+        this["layout"].Append(new QuickTalkButton(character)
         {
           Text = $"{character}",
         });

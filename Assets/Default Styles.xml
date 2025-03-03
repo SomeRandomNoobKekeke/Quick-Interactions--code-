@@ -33,6 +33,11 @@
     <TextAlign>[0.5,0.5]</TextAlign>
   </CUIButton>
 
+  <CUICompositeButton>
+    <MasterColorOpaque>CUIPalette.Button.Background</MasterColorOpaque>
+    <DisabledColor>CUIPalette.Button.Disabled</DisabledColor>
+  </CUICompositeButton>
+
   <CUIToggleButton>
     <MasterColorOpaque>CUIPalette.Button.Background</MasterColorOpaque>
     <Border>CUIPalette.Button.Border</Border>

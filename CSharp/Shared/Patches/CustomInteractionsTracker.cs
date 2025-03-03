@@ -1,0 +1,64 @@
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Barotrauma;
+using HarmonyLib;
+using Microsoft.Xna.Framework;
+using QIDependencyInjection;
+
+namespace QuickInteractions
+{
+
+  [PatchClass]
+  public class CustomInteractionsTracker
+  {
+    [Dependency] public static Debugger Debugger { get; set; }
+    [Singleton] public static CustomInteractionsTracker Instance { get; set; }
+
+    public event Action<Character> OnConversationEnded;
+    public event Action<Character> OnCharacterCreated;
+    public event Action<Character> OnCharacterKilled;
+
+    public static void Initialize()
+    {
+      Mod.Harmony.Patch(
+        original: typeof(Character).GetConstructors(AccessTools.all)[1],
+        postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Constructor_Postfix"))
+      );
+
+      Mod.Harmony.Patch(
+        original: typeof(Character).GetMethod("Kill", AccessTools.all),
+        prefix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Kill_Prefix"))
+      );
+
+      Mod.Harmony.Patch(
+        original: typeof(ConversationAction).GetMethod("ResetSpeaker", AccessTools.all),
+        postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("ConversationAction_ResetSpeaker_Postfix"))
+      );
+    }
+
+    public static void Character_Constructor_Postfix(Character __instance)
+    {
+      Debugger.Log("Character_Constructor_Postfix", DebugLevel.PatchExecuted);
+      if (!Utils.IsThisAnOutpost) return;
+      Instance.OnCharacterCreated?.Invoke(__instance);
+    }
+
+    public static void Character_Kill_Prefix(Character __instance)
+    {
+      Debugger.Log("Character_Kill_Prefix", DebugLevel.PatchExecuted);
+      if (!Utils.IsThisAnOutpost) return;
+      if (!__instance.IsDead) Instance.OnCharacterKilled?.Invoke(__instance);
+    }
+
+    public static void ConversationAction_ResetSpeaker_Postfix(ConversationAction __instance)
+    {
+      Debugger.Log($"ConversationAction_ResetSpeaker_Postfix {__instance.Speaker}", DebugLevel.PatchExecuted);
+      if (!Utils.IsThisAnOutpost) return;
+      Instance?.OnConversationEnded?.Invoke(__instance.Speaker);
+    }
+  }
+}

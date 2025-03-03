@@ -19,19 +19,60 @@ namespace QuickInteractions
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
     [Dependency] public Logger Logger { get; set; }
     [Dependency] public QuickTalk QuickTalk { get; set; }
+
+    private bool textVisible;
+    public bool TextVisible
+    {
+      get => textVisible;
+      set
+      {
+        if (textVisible == value) return;
+        textVisible = value;
+
+        this["layout"].Children.ForEach(c =>
+        {
+          if (c is QuickTalkButton button) button.TextVisible = value;
+        });
+      }
+    }
+
     public void CreateUI()
     {
-      Absolute = new CUINullRect(0, 0, 300, 300);
+      OutlineColor = new Color(0, 0, 0, 200);
+      //BackgroundColor = new Color(0, 0, 0, 100);
       Anchor = CUIAnchor.CenterLeft;
-      ResizibleLeft = false;
+      Relative = new CUINullRect(-0.5f, 0);
+      Resizible = false;
+      FitContent = new CUIBool2(true, true);
+      //DragHandle.DragRelative = true;
 
-      this["layout"] = new CUIVerticalList() { Relative = new CUINullRect(0, 0, 1, 1) };
-      this["layout"]["header"] = new CUITextBlock("Interactions")
+      this["layout"] = new CUIVerticalList()
       {
-
+        Relative = new CUINullRect(0, 0, 1, 1),
+        FitContent = new CUIBool2(true, true),
+        Scrollable = true,
       };
 
-      Logger.Log($"Revealed: {Revealed}");
+      Hydrate();
+    }
+
+    public override void Hydrate()
+    {
+      OnDrag += (x, y) =>
+      {
+        bool onTheLeft = x < CUI.GameScreenSize.X / 2.0f;
+
+        this["layout"].Children.ForEach(c =>
+        {
+          if (c is QuickTalkButton button)
+          {
+            button.Direction = onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse;
+          }
+        });
+      };
+
+      OnMouseOn += (e) => TextVisible = MouseOver;
+      OnMouseOff += (e) => TextVisible = MouseOver;
     }
 
     public void AfterInject()
@@ -50,10 +91,7 @@ namespace QuickInteractions
       this["layout"].RemoveAllChildren();
       foreach (Character character in QuickTalk.Interactable)
       {
-        this["layout"].Append(new QuickTalkButton(character)
-        {
-          Text = $"{character}",
-        });
+        this["layout"].Append(new QuickTalkButton(character));
       }
     }
   }

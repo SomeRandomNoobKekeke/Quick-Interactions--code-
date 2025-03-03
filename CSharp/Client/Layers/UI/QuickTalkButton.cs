@@ -13,19 +13,19 @@ using QIDependencyInjection;
 
 namespace QuickInteractions
 {
-  public class QuickTalkButton : CUICompositeButton
+  public class QuickTalkButton : CUIHorizontalList
   {
     public static Color GetButtonColor(Character character)
     {
       return character.CampaignInteractionType switch
       {
-        CampaignMode.InteractionType.Talk => new Color(200, 200, 200),
-        CampaignMode.InteractionType.Examine => new Color(200, 200, 200),
-        CampaignMode.InteractionType.Crew => new Color(0, 128, 128),
-        CampaignMode.InteractionType.Store => new Color(128, 128, 0),
-        CampaignMode.InteractionType.Upgrade => new Color(0, 128, 0),
-        CampaignMode.InteractionType.PurchaseSub => new Color(128, 128, 128),
-        CampaignMode.InteractionType.MedicalClinic => new Color(200, 0, 0),
+        CampaignMode.InteractionType.Talk => new Color(255, 255, 255),
+        CampaignMode.InteractionType.Examine => new Color(255, 255, 255),
+        CampaignMode.InteractionType.Crew => new Color(198, 211, 242),
+        CampaignMode.InteractionType.Store => new Color(206, 162, 138),
+        CampaignMode.InteractionType.Upgrade => new Color(106, 250, 115),
+        CampaignMode.InteractionType.PurchaseSub => new Color(169, 212, 187),
+        CampaignMode.InteractionType.MedicalClinic => new Color(245, 105, 105),
         _ => Color.White,
       };
     }
@@ -52,34 +52,52 @@ namespace QuickInteractions
 
     public Character character { get; set; }
 
-    public string Text
+    public bool TextVisible
     {
-      get => this.Get<CUITextBlock>("text").Text;
-      set => this.Get<CUITextBlock>("text").Text = value;
+      get => Text.Parent != null;
+      set
+      {
+        if (value)
+        {
+          if (Text.Parent == null) Append(Text);
+        }
+        else
+        {
+          if (Text.Parent != null) RemoveChild(Text);
+        }
+      }
     }
+
+    public CUIButton Icon;
+    public CUITextBlock Text;
 
     public QuickTalkButton(Character character) : base()
     {
       FitContent = new CUIBool2(true, true);
 
-      Layout = new CUILayoutHorizontalList();
+      string InteractionText = TextManager.Get("CampaignInteraction." + character.CampaignInteractionType).ToString().Replace("[[key]]", "");
 
-      this.Append(new CUIButton()
+      LocalizedString name = character.Info?.Title == "" ? character.Info?.DisplayName : character.Info?.Title;
+
+
+
+      this["icon"] = Icon = new CUIButton()
       {
         Text = "",
         Border = new CUIBorder(),
         BackgroundSprite = GetIcon(character),
+        MasterColorOpaque = GetButtonColor(character),
         ResizeToSprite = true,
-      });
-      this["text"] = new CUITextBlock("bebebebeb")
+      };
+
+      Text = new CUITextBlock("bebebebeb")
       {
-        FillEmptySpace = new CUIBool2(true, false),
         TextAlign = CUIAnchor.CenterLeft,
-        Border = new CUIBorder(),
+        Text = $"{name} - {InteractionText}",
       };
 
       this.character = character;
-      MasterColorOpaque = GetButtonColor(character);
+
     }
 
   }

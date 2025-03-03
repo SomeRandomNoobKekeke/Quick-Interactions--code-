@@ -29,7 +29,7 @@ namespace QICrabUI
       set
       {
         debug = value;
-        foreach (CUIComponent c in Children) { c.Debug = value; }
+        //foreach (CUIComponent c in Children) { c.Debug = value; }
       }
     }
 

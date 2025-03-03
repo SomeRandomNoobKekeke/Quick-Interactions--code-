@@ -116,6 +116,17 @@ namespace QICrabUI
       set => RightResizeHandle.Visible = value;
     }
 
+    [CUISerializable]
+    public CUIBool2 ResizeDirection
+    {
+      get => RightResizeHandle.Direction;
+      set
+      {
+        LeftResizeHandle.Direction = value;
+        RightResizeHandle.Direction = value;
+      }
+    }
+
     internal CUISwipeHandle SwipeHandle = new CUISwipeHandle();
     [CUISerializable]
     public bool Swipeable

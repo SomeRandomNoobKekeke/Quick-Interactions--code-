@@ -15,7 +15,7 @@ using Barotrauma.Extensions;
 namespace QuickInteractions
 {
   /// <summary>
-  /// A container for buttons that would sync their state
+  /// A container for buttons that sync their state
   /// </summary>
   public class CUICompositeButton : CUIComponent
   {

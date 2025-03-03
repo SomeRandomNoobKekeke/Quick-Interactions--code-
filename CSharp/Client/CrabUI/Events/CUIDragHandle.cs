@@ -22,6 +22,7 @@ namespace QICrabUI
     /// If true, will change relative prop instead of Absolute
     /// </summary>
     public bool DragRelative { get; set; } = false;
+    public bool OutputRealPos { get; set; } = false;
 
     public bool ShouldStart(CUIInput input)
     {
@@ -61,7 +62,8 @@ namespace QICrabUI
       else
       {
         Host.CUIProps.Absolute.SetValue(Host.Absolute with { Position = pos });
-        Host.InvokeOnDrag(pos.X, pos.Y);
+        if (OutputRealPos) Host.InvokeOnDrag(to.X, to.Y);
+        else Host.InvokeOnDrag(pos.X, pos.Y);
       }
     }
 

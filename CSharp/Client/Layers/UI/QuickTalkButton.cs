@@ -47,9 +47,9 @@ namespace QuickInteractions
       };
     }
 
-    public static CUISprite GetIcon(int i)
+    public static CUISprite GetIcon(int x, int y = 0)
     {
-      return new CUISprite("Interaction icons.png", new Rectangle(i * 34, 0, 34, 19));
+      return new CUISprite("Interaction icons.png", new Rectangle(x * 34, y * 19, 34, 19));
     }
 
     public static string GetInteractionText(Character character)
@@ -94,9 +94,6 @@ namespace QuickInteractions
     {
       FitContent = new CUIBool2(true, true);
       Direction = direction;
-
-
-
 
       this["icon"] = Icon = new CUIButton()
       {

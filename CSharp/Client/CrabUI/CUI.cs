@@ -166,6 +166,7 @@ namespace QICrabUI
     {
       if (Instance == null)
       {
+        Stopwatch sw = Stopwatch.StartNew();
         // this should init only static stuff that doesn't depend on instance
         OnInit?.Invoke();
 
@@ -174,10 +175,17 @@ namespace QICrabUI
         GameMain.Instance.Window.TextInput += ReEmitWindowTextInput;
         GameMain.Instance.Window.KeyDown += ReEmitWindowKeyDown;
         //GameMain.Instance.Window.KeyUp += ReEmitWindowKeyUp;
+        CUIDebug.Log($"CUI.OnInit?.Invoke took {sw.ElapsedMilliseconds}ms");
 
+        sw.Restart();
         PatchAll();
+        CUIDebug.Log($"CUI.PatchAll took {sw.ElapsedMilliseconds}ms");
+
         AddCommands();
+
+        sw.Restart();
         Instance.LuaRegistrar.Register();
+        CUIDebug.Log($"CUI.LuaRegistrar.Register took {sw.ElapsedMilliseconds}ms");
 
         //CUIPalette.PaletteDemo();
 

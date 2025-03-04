@@ -15,11 +15,11 @@ namespace QuickInteractions
 {
   public class UILayer
   {
-    [Singleton] public QuickTalkUI QuickTalkUI { get; set; }
+    [Singleton] public QuickInteractionsUI QuickInteractionsUI { get; set; }
 
     public void AfterInject()
     {
-      CUI.Main.Append(QuickTalkUI);
+      CUI.TopMain.Append(QuickInteractionsUI);
     }
   }
 

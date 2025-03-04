@@ -8,18 +8,20 @@ using System.IO;
 using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using QICrabUI;
 using QIDependencyInjection;
 
 namespace QuickInteractions
 {
-  public class QuickTalkUI : CUIFrame
+  public class QuickInteractionsUI : CUIFrame
   {
-
+    public static string SavePath => Path.Combine(Mod.Instance.Paths.DataUI, "QuickInteractionsUI.xml");
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
     [Dependency] public Logger Logger { get; set; }
     [Dependency] public Debugger Debugger { get; set; }
     [Dependency] public QuickTalk QuickTalk { get; set; }
+    [Dependency] public Fabricators Fabricators { get; set; }
     [Dependency] public Debouncer Debouncer { get; set; }
 
     private bool textVisible;
@@ -31,15 +33,18 @@ namespace QuickInteractions
         if (textVisible == value) return;
         textVisible = value;
 
-        BackgroundColor = value ? new Color(0, 0, 0, 100) : Color.Transparent;
+        //BackgroundColor = value ? new Color(0, 0, 0, 150) : Color.Transparent;
 
         UpdateAnchor();
         this["layout"].Children.ForEach(c =>
         {
-          if (c is QuickTalkButton button) button.TextVisible = value;
+          if (c is QuickTalkButton qtb) qtb.TextVisible = value;
+          if (c is FabricatorButton fb) fb.TextVisible = value;
         });
       }
     }
+
+    public CUIDirection ButtonDirection => Real.Left < CUI.GameScreenSize.X / 2.0f ? CUIDirection.Straight : CUIDirection.Reverse;
 
     public void UpdateAnchor()
     {
@@ -51,6 +56,7 @@ namespace QuickInteractions
           Anchor = CUIAnchor.BottomLeft;
           Absolute = Absolute with { Left = Real.Left };
         }
+        BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.None };
       }
       else
       {
@@ -59,12 +65,14 @@ namespace QuickInteractions
           Anchor = CUIAnchor.BottomRight;
           Absolute = Absolute with { Left = (Real.Left + Real.Width) - CUI.GameScreenSize.X };
         }
+        BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.FlipHorizontally };
       }
     }
     public void CreateUI()
     {
       OutlineColor = Color.Transparent;
-      BackgroundColor = Color.Transparent;
+      BackgroundColor = new Color(255, 255, 255, 255);//Color.Transparent;
+      BackgroundSprite = CUI.TextureManager.GetCUISprite(4, 1);
       Absolute = new CUINullRect(y: -50);
       Anchor = CUIAnchor.BottomLeft;
       Relative = new CUINullRect(-0.5f, 0);
@@ -78,9 +86,11 @@ namespace QuickInteractions
         Relative = new CUINullRect(0, 0, 1, 1),
         FitContent = new CUIBool2(true, true),
         Scrollable = true,
+        BreakSerialization = true,
       };
 
-      Hydrate();
+      //SaveToFile(SavePath);
+      LoadSelfFromFile(SavePath);
     }
 
     public override void Hydrate()
@@ -88,10 +98,20 @@ namespace QuickInteractions
       OnDrag += (x, y) =>
       {
         bool onTheLeft = x < CUI.GameScreenSize.X / 2.0f;
+
+        if (onTheLeft && BackgroundSprite.Effects == SpriteEffects.FlipHorizontally)
+        {
+          BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.None };
+        }
+        if (!onTheLeft && BackgroundSprite.Effects == SpriteEffects.None)
+        {
+          BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.FlipHorizontally };
+        }
+
         //UpdateAnchor();
         this["layout"].Children.ForEach(c =>
         {
-          if (c is QuickTalkButton button)
+          if (c is CUIHorizontalList button)
           {
             button.Direction = onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse;
           }
@@ -107,13 +127,24 @@ namespace QuickInteractions
         {
           QuickTalk.InteractWith(character);
         }
+
+        if (o is Item item)
+        {
+          if (Character.Controlled != null)
+          {
+            Character.Controlled.SelectedItem = item;
+          }
+        }
       });
     }
 
     public void AfterInject()
     {
       Mod.Instance.OnPluginLoad += () => { Revealed = Utils.IsThisAnOutpost; Refresh(); };
+      Mod.Instance.OnPluginUnload += () => { SaveToFile(SavePath); };
+
       GameStageTracker.OnRoundStart += () => { Revealed = Utils.IsThisAnOutpost; ScheduleRefresh(500); }; // bruh
+      GameStageTracker.OnRoundStartOrInitialize += () => { Revealed = Utils.IsThisAnOutpost; ScheduleRefresh(500); };
       GameStageTracker.OnRoundEnd += () => Revealed = false;
 
       QuickTalk.CharacterStatusUpdated += (c) => Refresh();
@@ -146,12 +177,27 @@ namespace QuickInteractions
 
         foreach (Character character in QuickTalk.WantToTalk)
         {
-          this["layout"].Append(new QuickTalkButton(character, onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse));
+          this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
         }
 
         foreach (Character character in QuickTalk.Merchants)
         {
-          this["layout"].Append(new QuickTalkButton(character, onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse));
+          this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
+        }
+
+        if (Fabricators.OutpostFabricator != null)
+        {
+          this["layout"].Append(new FabricatorButton(Fabricators.OutpostFabricator, ButtonDirection));
+        }
+
+        if (Fabricators.OutpostMedFabricator != null)
+        {
+          this["layout"].Append(new FabricatorButton(Fabricators.OutpostMedFabricator, ButtonDirection));
+        }
+
+        if (Fabricators.OutpostDeconstructor != null)
+        {
+          this["layout"].Append(new FabricatorButton(Fabricators.OutpostDeconstructor, ButtonDirection));
         }
       });
     }

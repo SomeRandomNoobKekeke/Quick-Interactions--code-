@@ -21,6 +21,8 @@ namespace QuickInteractions
 
     public event Action OnRoundStart;
     public event Action OnRoundEnd;
+    public event Action OnRoundStartOrInitialize;
+    public void InvokeOnRoundStartOrInitialize() => OnRoundStartOrInitialize?.Invoke();
 
     public static void Initialize()
     {
@@ -44,6 +46,7 @@ namespace QuickInteractions
     public static void GameSession_StartRound_Postfix()
     {
       Instance?.OnRoundStart?.Invoke();
+      Instance?.OnRoundStartOrInitialize?.Invoke();
     }
 
     public static void GameSession_EndRound_Postfix()

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -11,11 +12,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using QICrabUI;
 using QIDependencyInjection;
-
-using System.Runtime.CompilerServices;
-[assembly: IgnoresAccessChecksTo("Barotrauma")]
-[assembly: IgnoresAccessChecksTo("DedicatedServer")]
-[assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
 namespace QuickInteractions
 {
@@ -30,6 +26,8 @@ namespace QuickInteractions
     [Singleton] public Debugger Debugger { get; set; }
     [Singleton] public Logger Logger { get; set; }
     [Singleton] public LogicLevel Logic { get; set; }
+
+    [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
 
     public ModPaths Paths { get; set; }
@@ -46,31 +44,49 @@ namespace QuickInteractions
 
     public void Initialize()
     {
+      Stopwatch sw1 = Stopwatch.StartNew();
       Instance = this;
       AddCommands();
 
       Paths = new ModPaths(Name);
 
-
+      sw1.Stop();
+      Stopwatch sw2 = Stopwatch.StartNew();
 #if CLIENT
+      //CUI.Debug = true;
       CUI.ModDir = Paths.ModDir;
       CUI.AssetsPath = Paths.AssetsFolder;
       CUI.Initialize();
 #endif
+      sw2.Stop();
 
+      Stopwatch sw3 = Stopwatch.StartNew();
       SetupDependencies();
       Services.InjectEverything();
+      sw2.Stop();
 
       Debugger.Debug = Paths.IsInLocalMods;
-      //Debugger.CurrentLevel = DebugLevel.PatchExecuted | DebugLevel.UIRefresh;
+      Debugger.CurrentLevel = DebugLevel.Performance;
 
+      Debugger.Log($"AddCommands took {sw1.ElapsedMilliseconds}ms", DebugLevel.Performance);
+      Debugger.Log($"CUI.Initialize() took {sw2.ElapsedMilliseconds}ms", DebugLevel.Performance);
+      Debugger.Log($"InjectEverything took {sw3.ElapsedMilliseconds}ms", DebugLevel.Performance);
+
+      Stopwatch sw = Stopwatch.StartNew();
       PatchAll();
+      Debugger.Log($"PatchAll took {sw.ElapsedMilliseconds}ms", DebugLevel.Performance);
 
 #if CLIENT
       InitializeClient();
 #endif
 
+      sw.Restart();
       OnPluginLoad?.Invoke();
+      if (Utils.RoundIsLive)
+      {
+        GameStageTracker.InvokeOnRoundStartOrInitialize();
+      }
+      Debugger.Log($"Hooks took {sw.ElapsedMilliseconds}ms", DebugLevel.Performance);
 
       Logger.Info($"{Name} initialized");
     }

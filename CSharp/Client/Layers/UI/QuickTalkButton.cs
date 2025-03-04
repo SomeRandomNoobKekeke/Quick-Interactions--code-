@@ -17,6 +17,8 @@ namespace QuickInteractions
   {
     public static Color GetButtonColor(Character character)
     {
+      if (character.IsDead) return new Color(255, 0, 0);
+
       return character.CampaignInteractionType switch
       {
         CampaignMode.InteractionType.Talk => new Color(255, 255, 255),
@@ -50,6 +52,23 @@ namespace QuickInteractions
       return new CUISprite("Interaction icons.png", new Rectangle(i * 34, 0, 34, 19));
     }
 
+    public static string GetInteractionText(Character character)
+    {
+      string InteractionText = TextManager.Get("CampaignInteraction." + character.CampaignInteractionType).ToString().Replace("[[key]]", "");
+
+      bool isAManager = false;
+      if (character.Info?.Job?.Prefab.Identifier.Value is string s)
+      {
+        if (s.Contains("outpostmanager")) isAManager = true;
+      }
+
+      LocalizedString name = character.Info?.DisplayName;
+      if (character.Info?.Title != "") name = character.Info?.Title;
+      if (isAManager) name = "Outpost Manager";
+
+      return $"{name} - {InteractionText}";
+    }
+
     public Character character { get; set; }
 
     public bool TextVisible
@@ -71,13 +90,11 @@ namespace QuickInteractions
     public CUIButton Icon;
     public CUITextBlock Text;
 
-    public QuickTalkButton(Character character) : base()
+    public QuickTalkButton(Character character, CUIDirection direction) : base()
     {
       FitContent = new CUIBool2(true, true);
+      Direction = direction;
 
-      string InteractionText = TextManager.Get("CampaignInteraction." + character.CampaignInteractionType).ToString().Replace("[[key]]", "");
-
-      LocalizedString name = character.Info?.Title == "" ? character.Info?.DisplayName : character.Info?.Title;
 
 
 
@@ -90,10 +107,15 @@ namespace QuickInteractions
         ResizeToSprite = true,
       };
 
-      Text = new CUITextBlock("bebebebeb")
+      Icon.OnMouseDown += (e) =>
+      {
+        DispatchUp(new CUICommand("interact", character));
+      };
+
+      Text = new CUITextBlock("")
       {
         TextAlign = CUIAnchor.CenterLeft,
-        Text = $"{name} - {InteractionText}",
+        Text = GetInteractionText(character),
       };
 
       this.character = character;

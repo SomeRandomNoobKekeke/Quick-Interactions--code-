@@ -42,7 +42,7 @@ namespace QuickInteractions
 
       if (character.IsDead)
       {
-        CharacterStatusUpdated?.Invoke(character);
+        //CharacterStatusUpdated?.Invoke(character);
         return;
       }
 
@@ -66,6 +66,8 @@ namespace QuickInteractions
     {
       CustomInteractionsTracker.OnCharacterCreated += (c) => ScheduleCharacterUpdate(c);
       CustomInteractionsTracker.OnCharacterKilled += (c) => ScheduleCharacterUpdate(c);
+      CustomInteractionsTracker.OnCharacterDespawned += (c) => ScheduleCharacterUpdate(c);
+      CustomInteractionsTracker.OnCustomInteractSet += (c) => ScheduleCharacterUpdate(c);
       CustomInteractionsTracker.OnConversationEnded += (c) => ScheduleCharacterUpdate(c);
     }
   }

@@ -19,6 +19,7 @@ namespace QuickInteractions
   {
     All = 0,
     PatchExecuted = 1,
+    UIRefresh = 2,
   }
 
   public enum DebugAdditionalPrint

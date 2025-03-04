@@ -18,7 +18,9 @@ namespace QuickInteractions
 
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
     [Dependency] public Logger Logger { get; set; }
+    [Dependency] public Debugger Debugger { get; set; }
     [Dependency] public QuickTalk QuickTalk { get; set; }
+    [Dependency] public Debouncer Debouncer { get; set; }
 
     private bool textVisible;
     public bool TextVisible
@@ -29,6 +31,9 @@ namespace QuickInteractions
         if (textVisible == value) return;
         textVisible = value;
 
+        BackgroundColor = value ? new Color(0, 0, 0, 100) : Color.Transparent;
+
+        UpdateAnchor();
         this["layout"].Children.ForEach(c =>
         {
           if (c is QuickTalkButton button) button.TextVisible = value;
@@ -36,15 +41,37 @@ namespace QuickInteractions
       }
     }
 
+    public void UpdateAnchor()
+    {
+      bool onTheLeft = Real.Left < CUI.GameScreenSize.X / 2.0f;
+      if (onTheLeft)
+      {
+        if (Anchor == CUIAnchor.BottomRight)
+        {
+          Anchor = CUIAnchor.BottomLeft;
+          Absolute = Absolute with { Left = Real.Left };
+        }
+      }
+      else
+      {
+        if (Anchor == CUIAnchor.BottomLeft)
+        {
+          Anchor = CUIAnchor.BottomRight;
+          Absolute = Absolute with { Left = (Real.Left + Real.Width) - CUI.GameScreenSize.X };
+        }
+      }
+    }
     public void CreateUI()
     {
-      OutlineColor = new Color(0, 0, 0, 200);
-      //BackgroundColor = new Color(0, 0, 0, 100);
-      Anchor = CUIAnchor.CenterLeft;
+      OutlineColor = Color.Transparent;
+      BackgroundColor = Color.Transparent;
+      Absolute = new CUINullRect(y: -50);
+      Anchor = CUIAnchor.BottomLeft;
       Relative = new CUINullRect(-0.5f, 0);
       Resizible = false;
       FitContent = new CUIBool2(true, true);
       //DragHandle.DragRelative = true;
+      DragHandle.OutputRealPos = true;
 
       this["layout"] = new CUIVerticalList()
       {
@@ -61,7 +88,7 @@ namespace QuickInteractions
       OnDrag += (x, y) =>
       {
         bool onTheLeft = x < CUI.GameScreenSize.X / 2.0f;
-
+        //UpdateAnchor();
         this["layout"].Children.ForEach(c =>
         {
           if (c is QuickTalkButton button)
@@ -73,26 +100,60 @@ namespace QuickInteractions
 
       OnMouseOn += (e) => TextVisible = MouseOver;
       OnMouseOff += (e) => TextVisible = MouseOver;
+
+      AddCommand("interact", (o) =>
+      {
+        if (o is Character character)
+        {
+          QuickTalk.InteractWith(character);
+        }
+      });
     }
 
     public void AfterInject()
     {
       Mod.Instance.OnPluginLoad += () => { Revealed = Utils.IsThisAnOutpost; Refresh(); };
-      GameStageTracker.OnRoundStart += () => { Revealed = Utils.IsThisAnOutpost; Refresh(); };
+      GameStageTracker.OnRoundStart += () => { Revealed = Utils.IsThisAnOutpost; ScheduleRefresh(500); }; // bruh
       GameStageTracker.OnRoundEnd += () => Revealed = false;
 
+      QuickTalk.CharacterStatusUpdated += (c) => Refresh();
+
       CreateUI();
+    }
+
+    public void ScheduleRefresh(int delay = 100)
+    {
+      Debugger.Log("ScheduleRefresh", DebugLevel.UIRefresh);
+      GameMain.LuaCs.Timer.Wait((object[] args) => Refresh(), delay);
     }
 
     public void Refresh()
     {
       if (!Revealed) return;
 
-      this["layout"].RemoveAllChildren();
-      foreach (Character character in QuickTalk.Interactable)
+      Debouncer.Debounce("refresh", 100, () =>
       {
-        this["layout"].Append(new QuickTalkButton(character));
-      }
+        if (GUI.DisableHUD)
+        {
+          ScheduleRefresh(500);
+          return;
+        }
+        Debugger.Log("Refresh", DebugLevel.UIRefresh);
+
+        bool onTheLeft = Real.Left < CUI.GameScreenSize.X / 2.0f;
+
+        this["layout"].RemoveAllChildren();
+
+        foreach (Character character in QuickTalk.WantToTalk)
+        {
+          this["layout"].Append(new QuickTalkButton(character, onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse));
+        }
+
+        foreach (Character character in QuickTalk.Merchants)
+        {
+          this["layout"].Append(new QuickTalkButton(character, onTheLeft ? CUIDirection.Straight : CUIDirection.Reverse));
+        }
+      });
     }
   }
 }

@@ -62,6 +62,7 @@ namespace QuickInteractions
       Services.InjectEverything();
 
       Debugger.Debug = Paths.IsInLocalMods;
+      //Debugger.CurrentLevel = DebugLevel.PatchExecuted | DebugLevel.UIRefresh;
 
       PatchAll();
 

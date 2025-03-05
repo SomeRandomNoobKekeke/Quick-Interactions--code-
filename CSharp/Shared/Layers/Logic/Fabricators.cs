@@ -19,15 +19,24 @@ namespace QuickInteractions
     [Dependency] public Logger Logger { get; set; }
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
+    // Dirty, but it's much simpler than removing this https://github.com/evilfactory/LuaCsForBarotrauma/blob/6da26ffa93eb1d94b8fec4add1847879e6b1c75d/Barotrauma/BarotraumaShared/SharedSource/Characters/Animation/HumanoidAnimController.cs#L428
+    public void MakeUngrabbable(Item item)
+    {
+      item.Prefab.GrabWhenSelected = false;
+    }
+
+    public void RestoreGrabability()
+    {
+      if (OutpostFabricator != null) OutpostFabricator.Prefab.GrabWhenSelected = true;
+      if (OutpostMedFabricator != null) OutpostMedFabricator.Prefab.GrabWhenSelected = true;
+      if (OutpostDeconstructor != null) OutpostDeconstructor.Prefab.GrabWhenSelected = true;
+    }
+
     private bool searchedThisRound = false;
     // Too lazy to dry it
     public void FindFabricators()
     {
-      if (!Utils.RoundIsLive)
-      {
-        Logger.Warning($"Tried to FindFabricators before round start");
-        return;
-      }
+      if (!Utils.RoundIsLive) return;
 
       if (searchedThisRound) return;
       searchedThisRound = true;
@@ -109,11 +118,14 @@ namespace QuickInteractions
     {
       Mod.Instance.OnPluginLoad += FindFabricators;
       GameStageTracker.OnRoundStart += FindFabricators;
+      Mod.Instance.OnPluginUnload += RestoreGrabability;
       GameStageTracker.OnRoundEnd += () =>
       {
+        RestoreGrabability();
         searchedThisRound = false;
         OutpostFabricator = null;
         OutpostDeconstructor = null;
+        OutpostMedFabricator = null;
       };
     }
   }

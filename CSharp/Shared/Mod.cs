@@ -51,8 +51,8 @@ namespace QuickInteractions
       AddCommands();
 
       Paths = new ModPaths(Name);
-
       sw1.Stop();
+
       Stopwatch sw2 = Stopwatch.StartNew();
 #if CLIENT
       //CUI.Debug = true;
@@ -65,10 +65,10 @@ namespace QuickInteractions
       Stopwatch sw3 = Stopwatch.StartNew();
       SetupDependencies();
       Services.InjectEverything();
-      sw2.Stop();
+      sw3.Stop();
 
       Debugger.Debug = Paths.IsInLocalMods;
-      Debugger.CurrentLevel = DebugLevel.Performance;
+      //Debugger.CurrentLevel = DebugLevel.Performance;
 
       Debugger.Log($"AddCommands took {sw1.ElapsedMilliseconds}ms", DebugLevel.Performance);
       Debugger.Log($"CUI.Initialize() took {sw2.ElapsedMilliseconds}ms", DebugLevel.Performance);

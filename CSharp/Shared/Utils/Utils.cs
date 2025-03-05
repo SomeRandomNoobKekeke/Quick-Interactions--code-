@@ -15,7 +15,7 @@ namespace QuickInteractions
   {
     [Dependency] public static Logger Logger { get; set; }
 
-    public static bool IsThisAnOutpost => Level.Loaded is { Type: LevelData.LevelType.Outpost };
+    public static bool IsThisAnOutpost => GameMain.GameSession?.GameMode is CampaignMode && Level.IsLoadedFriendlyOutpost;// && Level.Loaded is { Type: LevelData.LevelType.Outpost };
     public static bool IsThisAConnection => Level.Loaded is { Type: LevelData.LevelType.LocationConnection };
     public static bool RoundIsLive => GameMain.GameSession?.IsRunning ?? false;
 

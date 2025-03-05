@@ -117,7 +117,11 @@ namespace QuickInteractions
     public void AfterInject()
     {
       Mod.Instance.OnPluginLoad += FindFabricators;
-      GameStageTracker.OnRoundStart += FindFabricators;
+      GameStageTracker.OnRoundStart += () =>
+      {
+        searchedThisRound = false;
+        FindFabricators();
+      };
       Mod.Instance.OnPluginUnload += RestoreGrabability;
       GameStageTracker.OnRoundEnd += () =>
       {

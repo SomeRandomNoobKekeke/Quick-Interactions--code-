@@ -23,11 +23,9 @@ namespace QICrabUI
   /// </summary>
   public partial class CUI
   {
-    /// <summary>
-    /// I need to init all reflction stuff at once, and not one by one when i touch it
-    /// </summary>
-    [CUIInternal]
-    static CUI() { InitStatic(); }
+    // bruh
+    //[CUIInternal]
+    //static CUI() { InitStatic(); }
 
     public static Vector2 GameScreenSize => new Vector2(GameMain.GraphicsWidth, GameMain.GraphicsHeight);
     public static Rectangle GameScreenRect => new Rectangle(0, 0, GameMain.GraphicsWidth, GameMain.GraphicsHeight);
@@ -167,6 +165,8 @@ namespace QICrabUI
       if (Instance == null)
       {
         Stopwatch sw = Stopwatch.StartNew();
+
+        InitStatic();
         // this should init only static stuff that doesn't depend on instance
         OnInit?.Invoke();
 
@@ -186,14 +186,6 @@ namespace QICrabUI
         sw.Restart();
         Instance.LuaRegistrar.Register();
         CUIDebug.Log($"CUI.LuaRegistrar.Register took {sw.ElapsedMilliseconds}ms");
-
-        //CUIPalette.PaletteDemo();
-
-        //HACK this works, but i still think that i shouldn't make aby assumptions about
-        // file layout outside of CSharp folder, and i shouldn't store pngs in CSharp
-        // perhaps i should generate default textures at runtime
-        // or pack them with dll when plugin system settles
-        //Log(GetCallerFilePath());
       }
 
       UserCount++;
@@ -235,6 +227,8 @@ namespace QICrabUI
       //GameMain.Instance.Window.KeyUp -= ReEmitWindowKeyUp;
     }
 
+    //HACK Why it's set to run in static constructor?
+    // it runs perfectly fine in CUI.Initialize
     internal static void InitStatic()
     {
       CUIExtensions.InitStatic();

@@ -39,6 +39,7 @@ namespace QuickInteractions
     public void InteractWith(Character character)
     {
       if (character == null) return;
+      if (Character.Controlled == null) return;
       if (character.IsDead) return;
 
       if (character.onCustomInteract != null)

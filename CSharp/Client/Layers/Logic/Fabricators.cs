@@ -19,13 +19,12 @@ namespace QuickInteractions
 
     public void SelectItem(Item item)
     {
-      if (Character.Controlled != null)
+      if (Character.Controlled == null) return;
+
+      Character.Controlled.SelectedItem = item;
+      if (GameMain.IsMultiplayer)
       {
-        Character.Controlled.SelectedItem = item;
-        if (GameMain.IsMultiplayer)
-        {
-          FakeInput.SendInteractPackage(item);
-        }
+        FakeInput.SendInteractPackage(item);
       }
     }
   }

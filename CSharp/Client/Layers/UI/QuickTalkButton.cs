@@ -22,12 +22,26 @@ namespace QuickInteractions
       return character.CampaignInteractionType switch
       {
         CampaignMode.InteractionType.Talk => new Color(255, 255, 255),
-        CampaignMode.InteractionType.Examine => new Color(255, 255, 255),
+        CampaignMode.InteractionType.Examine => character.HumanPrefab?.Identifier.Value switch
+        {
+          "jestmaster" => new Color(255, 64, 255),
+          "huskcultecclesiast" => new Color(80, 80, 255),
+          _ => new Color(255, 255, 255),
+        },
         CampaignMode.InteractionType.Crew => new Color(198, 211, 242),
-        CampaignMode.InteractionType.Store => new Color(206, 162, 138),
+        CampaignMode.InteractionType.Store => character.HumanPrefab?.Identifier.Value switch
+        {
+          "merchantnightclub" => new Color(255, 0, 80),
+          "merchantmedical" => new Color(255, 130, 130),
+          "merchantengineering" => new Color(255, 255, 130),
+          "merchantarmory" => new Color(200, 200, 200),
+          "merchantclown" => new Color(255, 64, 255),
+          "merchanthusk" => new Color(80, 80, 255),
+          _ => new Color(255, 200, 170),
+        },
         CampaignMode.InteractionType.Upgrade => new Color(106, 250, 115),
         CampaignMode.InteractionType.PurchaseSub => new Color(169, 212, 187),
-        CampaignMode.InteractionType.MedicalClinic => new Color(245, 105, 105),
+        CampaignMode.InteractionType.MedicalClinic => new Color(255, 130, 130),
         _ => Color.White,
       };
     }
@@ -56,15 +70,12 @@ namespace QuickInteractions
     {
       string InteractionText = TextManager.Get("CampaignInteraction." + character.CampaignInteractionType).ToString().Replace("[[key]]", "");
 
-      bool isAManager = false;
-      if (character.Info?.Job?.Prefab.Identifier.Value is string s)
-      {
-        if (s.Contains("outpostmanager")) isAManager = true;
-      }
+      string pname = character.HumanPrefab?.Identifier.Value;
+      bool isAManager = pname != null && pname.Contains("outpostmanager");
 
       LocalizedString name = character.Info?.DisplayName;
       if (character.Info?.Title != "") name = character.Info?.Title;
-      if (isAManager) name = "Outpost Manager";
+      if (isAManager) name = TextManager.Get("npctitle.outpostmanager");
 
       return $"{name} - {InteractionText}";
     }

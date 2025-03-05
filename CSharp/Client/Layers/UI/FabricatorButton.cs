@@ -20,8 +20,8 @@ namespace QuickInteractions
       return item.Prefab.Identifier.Value switch
       {
         "fabricator" => new Color(255, 255, 255),
-        "medicalfabricator" => new Color(255, 150, 150),
-        "deconstructor" => new Color(255, 255, 150),
+        "medicalfabricator" => new Color(255, 130, 130),
+        "deconstructor" => new Color(255, 255, 130),
         _ => new Color(255, 255, 255),
       };
     }

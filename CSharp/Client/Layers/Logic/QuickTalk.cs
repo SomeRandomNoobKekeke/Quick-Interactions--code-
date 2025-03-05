@@ -15,8 +15,8 @@ namespace QuickInteractions
   [Singleton]
   public class QuickTalk
   {
-    [Dependency] public Logger Logger { get; set; }
     [Dependency] public CustomInteractionsTracker CustomInteractionsTracker { get; set; }
+    [Dependency] public FakeInput FakeInput { get; set; }
     public event Action<Character> CharacterStatusUpdated;
 
     public IEnumerable<Character> Interactable => Character.CharacterList.Where(
@@ -39,15 +39,15 @@ namespace QuickInteractions
     public void InteractWith(Character character)
     {
       if (character == null) return;
-
-      if (character.IsDead)
-      {
-        //CharacterStatusUpdated?.Invoke(character);
-        return;
-      }
+      if (character.IsDead) return;
 
       if (character.onCustomInteract != null)
       {
+        if (GameMain.IsMultiplayer)
+        {
+          FakeInput.SendInteractPackage(character);
+        }
+
         character.onCustomInteract(character, Character.Controlled);
         ScheduleCharacterUpdate(character);
       }

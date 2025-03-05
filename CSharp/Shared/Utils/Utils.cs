@@ -19,7 +19,10 @@ namespace QuickInteractions
     public static bool IsThisAConnection => Level.Loaded is { Type: LevelData.LevelType.LocationConnection };
     public static bool RoundIsLive => GameMain.GameSession?.IsRunning ?? false;
 
+#if CLIENT
     public static bool IsThisASinglePlayer => GameMain.IsSingleplayer;
     public static bool IsThisASinglePlayerCampaign => GameMain.GameSession?.GameMode is SinglePlayerCampaign;
+#endif
+
   }
 }

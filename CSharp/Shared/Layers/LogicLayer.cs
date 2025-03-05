@@ -12,8 +12,8 @@ using QIDependencyInjection;
 
 namespace QuickInteractions
 {
-  public class LogicLevel
+  public partial class LogicLayer
   {
-    [Singleton] public QuickTalk QuickTalk { get; set; }
+    [Singleton] public Fabricators Fabricators { get; set; }
   }
 }

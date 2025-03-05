@@ -7,8 +7,6 @@ using System.IO;
 
 using Barotrauma;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
 using HarmonyLib;
 
 namespace QuickInteractions

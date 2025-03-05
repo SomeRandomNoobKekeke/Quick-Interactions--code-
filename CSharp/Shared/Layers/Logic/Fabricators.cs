@@ -14,16 +14,10 @@ using Barotrauma.Items.Components;
 namespace QuickInteractions
 {
   [Singleton]
-  public class Fabricators
+  public partial class Fabricators
   {
     [Dependency] public Logger Logger { get; set; }
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
-
-    // Dirty, but i don't see another way, this grabbing logic is defined in the middle of https://github.com/evilfactory/LuaCsForBarotrauma/blob/6da26ffa93eb1d94b8fec4add1847879e6b1c75d/Barotrauma/BarotraumaShared/SharedSource/Characters/Animation/HumanoidAnimController.cs#L428
-    public void MakeUngrabbable(Item item)
-    {
-      item.Prefab.GrabWhenSelected = false;
-    }
 
     private bool searchedThisRound = false;
     // Too lazy to dry it

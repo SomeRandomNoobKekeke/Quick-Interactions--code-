@@ -130,10 +130,7 @@ namespace QuickInteractions
 
         if (o is Item item)
         {
-          if (Character.Controlled != null)
-          {
-            Character.Controlled.SelectedItem = item;
-          }
+          Fabricators.SelectItem(item);
         }
       });
     }

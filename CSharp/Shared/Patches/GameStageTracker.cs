@@ -8,7 +8,6 @@ using System.IO;
 using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using QIDependencyInjection;
 
 namespace QuickInteractions
@@ -17,7 +16,7 @@ namespace QuickInteractions
   public class GameStageTracker
   {
     [Singleton] public static GameStageTracker Instance { get; set; }
-    [Dependency] public Debugger Debugger { get; set; }
+
 
     public event Action OnRoundStart;
     public event Action OnRoundEnd;

@@ -9,9 +9,11 @@ using System.IO;
 using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using QICrabUI;
 using QIDependencyInjection;
+
+#if CLIENT
+using QICrabUI;
+#endif
 
 namespace QuickInteractions
 {
@@ -25,7 +27,7 @@ namespace QuickInteractions
 
     [Singleton] public Debugger Debugger { get; set; }
     [Singleton] public Logger Logger { get; set; }
-    [Singleton] public LogicLevel Logic { get; set; }
+    [Singleton] public LogicLayer Logic { get; set; }
 
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
@@ -113,7 +115,9 @@ namespace QuickInteractions
     public void Dispose()
     {
       OnPluginUnload?.Invoke();
+#if CLIENT
       CUI.Dispose();
+#endif
       RemoveCommands();
 
       Mod.Harmony.UnpatchAll(Mod.Harmony.Id);

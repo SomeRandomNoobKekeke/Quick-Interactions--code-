@@ -29,7 +29,11 @@ namespace QuickInteractions
       Debugger.Log("CampaignMode_NPCInteract_Replace", DebugLevel.PatchExecuted);
       if (!npc.AllowCustomInteract) { return false; }
       if (npc.AIController is HumanAIController humanAi && !humanAi.AllowCampaignInteraction()) { return false; }
+
+      // not compiled on server
+#if CLIENT
       __instance.NPCInteractProjSpecific(npc, interactor);
+#endif
 
       string coroutineName = "DoCharacterWait." + (npc?.ID ?? Entity.NullEntityID);
       if (!CoroutineManager.IsCoroutineRunning(coroutineName))

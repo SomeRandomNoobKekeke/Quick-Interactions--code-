@@ -69,15 +69,22 @@ namespace CrabUI
       set => TextureManager.PGNAssets = value;
     }
 
-    // this doesn't help
-    private static CUI instance;
+    private static List<CUI> Instances = new List<CUI>();
     /// <summary>
     /// The singleton
     /// </summary>
     public static CUI Instance
     {
-      get => instance;
-      private set => instance = value;
+      get
+      {
+        if (Instances.Count == 0) return null;
+        return Instances.First();
+      }
+      set
+      {
+        Instances.Clear();
+        if (value != null) Instances.Add(value);
+      }
     }
     /// <summary>
     /// Orchestrates Drawing and updates, there could be only one

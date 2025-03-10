@@ -28,6 +28,7 @@ namespace QuickInteractions
     [Singleton] public Debugger Debugger { get; set; }
     [Singleton] public Logger Logger { get; set; }
     [Singleton] public LogicLayer Logic { get; set; }
+    [Singleton] public Debouncer Debouncer { get; set; }
 
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
@@ -121,6 +122,7 @@ namespace QuickInteractions
       CUI.Dispose();
 #endif
       RemoveCommands();
+      Debouncer.Dispose();
 
       Mod.Harmony.UnpatchAll(Mod.Harmony.Id);
     }

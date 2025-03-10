@@ -13,7 +13,7 @@ namespace QuickInteractions
 {
   // Idk, mb it should be just an extension to LuaCsTimer
   [Singleton]
-  public class Debouncer
+  public class Debouncer : IDisposable
   {
     public static LuaCsTimer Timer => GameMain.LuaCs.Timer;
     [Dependency] public Logger Logger { get; set; }
@@ -42,6 +42,15 @@ namespace QuickInteractions
         Scheduled[name] = timedAction;
       }
 
+    }
+
+    public void Dispose()
+    {
+      foreach (var timedAction in Scheduled.Values)
+      {
+        Timer.timedActions.Remove(timedAction);
+      }
+      Scheduled.Clear();
     }
   }
 }

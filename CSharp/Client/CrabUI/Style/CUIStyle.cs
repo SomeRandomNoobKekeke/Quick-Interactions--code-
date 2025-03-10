@@ -11,13 +11,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace QICrabUI
+namespace CrabUI
 {
 
   /// <summary>
   /// In Fact just an observable dict
   /// </summary>
-  public partial class CUIStyle : IEnumerable<KeyValuePair<string, string>>
+  public partial class CUIStyle : IEnumerable<KeyValuePair<string, string>>, ICloneable
   {
     public static CUIStyle DefaultFor(Type T) => CUITypeMetaData.Get(T).DefaultStyle;
     public static CUIStyle DefaultFor<T>() where T : CUIComponent => CUITypeMetaData.Get(typeof(T)).DefaultStyle;
@@ -48,6 +48,13 @@ namespace QICrabUI
     {
       get => Props.ContainsKey(name) ? Props[name] : "";
       set => Add(name, value);
+    }
+
+    public object Clone()
+    {
+      CUIStyle style = new CUIStyle();
+      style.Props = new Dictionary<string, string>(Props);
+      return style;
     }
 
     public static CUIStyle Merge(CUIStyle baseStyle, CUIStyle addedStyle)

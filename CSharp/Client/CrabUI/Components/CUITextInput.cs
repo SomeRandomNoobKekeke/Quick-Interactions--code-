@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using EventInput;
 using System.Windows;
 
-namespace QICrabUI
+namespace CrabUI
 {
 
   /// <summary>

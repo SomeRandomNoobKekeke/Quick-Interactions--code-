@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using QIDependencyInjection;
 
 #if CLIENT
-using QICrabUI;
+using CrabUI;
 #endif
 
 namespace QuickInteractions
@@ -58,6 +58,7 @@ namespace QuickInteractions
       //CUI.Debug = true;
       CUI.ModDir = Paths.ModDir;
       CUI.AssetsPath = Paths.AssetsFolder;
+      CUI.HookIdentifier = Name;
       CUI.Initialize();
 #endif
       sw2.Stop();

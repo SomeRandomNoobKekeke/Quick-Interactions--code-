@@ -10,11 +10,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
-  /// Allowing you to load textures safely  
-  /// With texture caching, BackupTexture, and automatic Dispose
+  /// Class for loading textures without duplicates  
+  /// Also disposes all loaded textures automatically
   /// </summary>
   public class CUITextureManager : IDisposable
   {
@@ -33,7 +33,7 @@ namespace QICrabUI
     // }
 
     /// <summary>
-    /// Path to mod assets
+    /// Path to additional PNGs, it can be set in CUI
     /// </summary>
     public string PGNAssets { get; set; }
 
@@ -67,12 +67,15 @@ namespace QICrabUI
       return sprite;
     }
 
+    /// <summary>
+    /// 32x32 square on (x,y) position from CUI.png
+    /// </summary>
     public CUISprite GetCUISprite(int x, int y, CUISpriteDrawMode? drawMode = null, SpriteEffects? effects = null)
     {
       return GetSprite(CUI.CUITexturePath, new Rectangle(x * 32, y * 32, 32, 32), drawMode, effects);
     }
 
-    public Texture2D TryLoad(string path)
+    private Texture2D TryLoad(string path)
     {
       Texture2D texture = null;
       try

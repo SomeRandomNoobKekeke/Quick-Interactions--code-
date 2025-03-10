@@ -9,7 +9,7 @@ using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using QICrabUI;
+using CrabUI;
 using QIDependencyInjection;
 
 namespace QuickInteractions
@@ -56,7 +56,7 @@ namespace QuickInteractions
           Anchor = CUIAnchor.BottomLeft;
           Absolute = Absolute with { Left = Real.Left };
         }
-        BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.None };
+        BackgroundSprite.Effects = SpriteEffects.None;
       }
       else
       {
@@ -65,7 +65,7 @@ namespace QuickInteractions
           Anchor = CUIAnchor.BottomRight;
           Absolute = Absolute with { Left = (Real.Left + Real.Width) - CUI.GameScreenSize.X };
         }
-        BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.FlipHorizontally };
+        BackgroundSprite.Effects = SpriteEffects.FlipHorizontally;
       }
     }
     public void CreateUI()
@@ -101,11 +101,11 @@ namespace QuickInteractions
 
         if (onTheLeft && BackgroundSprite.Effects == SpriteEffects.FlipHorizontally)
         {
-          BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.None };
+          BackgroundSprite.Effects = SpriteEffects.None;
         }
         if (!onTheLeft && BackgroundSprite.Effects == SpriteEffects.None)
         {
-          BackgroundSprite = BackgroundSprite with { Effects = SpriteEffects.FlipHorizontally };
+          BackgroundSprite.Effects = SpriteEffects.FlipHorizontally;
         }
 
         //UpdateAnchor();

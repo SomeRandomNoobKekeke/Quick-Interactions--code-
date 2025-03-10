@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using HarmonyLib;
 using EventInput;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUI
   {
@@ -29,17 +29,22 @@ namespace QICrabUI
         prefix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_DrawCursor_Prefix", AccessTools.all))
       );
 
-      // This is cursed
-      // harmony.Patch(
-      //   original: typeof(GameMain).GetMethod("Update", AccessTools.all),
-      //   postfix: new HarmonyMethod(typeof(CUI).GetMethod("CUIUpdate", AccessTools.all))
-      // );
-      GameMain.LuaCs.Hook.Add("think", (object[] args) =>
+      if (UseCursedPatches)
       {
-        CUIUpdate(Timing.TotalTime);
-        return null;
-      });
-
+        // This is cursed
+        harmony.Patch(
+          original: typeof(GameMain).GetMethod("Update", AccessTools.all),
+          postfix: new HarmonyMethod(typeof(CUI).GetMethod("GameMain_Update_Postfix", AccessTools.all))
+        );
+      }
+      else
+      {
+        GameMain.LuaCs.Hook.Add("think", $"CrabUI.{HookIdentifier}", (object[] args) =>
+        {
+          CUIUpdate(Timing.TotalTime);
+          return null;
+        });
+      }
 
       harmony.Patch(
         original: typeof(GUI).GetMethod("UpdateMouseOn", AccessTools.all),
@@ -103,15 +108,23 @@ namespace QICrabUI
       CUI.InvokeOnPauseMenuToggled();
     }
 
+    private static void GameMain_Update_Postfix(GameTime gameTime)
+    {
+      CUIUpdate(gameTime.TotalGameTime.TotalSeconds);
+    }
     private static void CUIUpdate(double time)
     {
       try
       {
+        CUIAnimation.UpdateAllAnimations(time);
         CUI.Input?.Scan(time);
         TopMain?.Update(time);
         Main?.Update(time);
       }
-      catch (Exception e) { CUI.Warning($"CUI: {e}"); }
+      catch (Exception e)
+      {
+        CUI.Warning($"CUI: {e}");
+      }
     }
 
     private static void GUI_Draw_Prefix(SpriteBatch spriteBatch)
@@ -133,9 +146,9 @@ namespace QICrabUI
 
     private static void GUI_UpdateMouseOn_Postfix(ref GUIComponent __result)
     {
-      if (GUI.MouseOn == null && Main.MouseOn != null && Main.MouseOn != Main) GUI.MouseOn = CUIComponent.dummyComponent;
-      if (TopMain.MouseOn != null && TopMain.MouseOn != TopMain) GUI.MouseOn = CUIComponent.dummyComponent;
-
+      if (Main == null) CUI.Error($"GUI_UpdateMouseOn_Postfix: CUI.Main in {HookIdentifier} was null, tell the dev");
+      if (GUI.MouseOn == null && Main != null && Main.MouseOn != null && Main.MouseOn != Main) GUI.MouseOn = CUIComponent.dummyComponent;
+      if (TopMain != null && TopMain.MouseOn != null && TopMain.MouseOn != TopMain) GUI.MouseOn = CUIComponent.dummyComponent;
     }
 
     private static void CUIBlockScroll(float deltaTime, ref bool allowMove, ref bool allowZoom, bool allowInput, bool? followSub)

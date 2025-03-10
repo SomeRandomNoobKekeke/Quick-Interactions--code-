@@ -10,7 +10,7 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 using System.IO;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUI
   {

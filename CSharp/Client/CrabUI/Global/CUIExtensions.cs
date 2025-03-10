@@ -13,13 +13,13 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using HarmonyLib;
 
-namespace QICrabUI
+namespace CrabUI
 {
   [CUIInternal]
   public static partial class CUIExtensions
   {
     public static int Fit(this int i, int bottom, int top) => Math.Max(bottom, Math.Min(i, top));
-
+    public static Vector2 Rotate(this Vector2 v, float angle) => Vector2.Transform(v, Matrix.CreateRotationZ(angle));
     public static string SubstringSafe(this string s, int start)
     {
       try

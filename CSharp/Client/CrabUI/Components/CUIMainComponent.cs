@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Orchestrating drawing and updating of it's children  
@@ -347,7 +347,7 @@ namespace QICrabUI
       {
         RunStraigth(c =>
         {
-          bool ok = !c.IgnoreEvents && c.Real.Contains(CUI.Input.MousePosition);
+          bool ok = !c.IgnoreEvents && c.Real.Contains(CUI.Input.MousePosition) && c.ShouldInvoke(CUI.Input);
 
           if (c.Parent != null && c.Parent.ScissorRect.HasValue &&
               !c.Parent.ScissorRect.Value.Contains(CUI.Input.Mouse.Position))

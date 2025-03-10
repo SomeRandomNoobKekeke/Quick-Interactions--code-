@@ -1,3 +1,47 @@
+## 0.2.5.1
+Experimenting with the way multiple CUIs resolve conflicts
+Renamed CUI.UpdateHookIdentifier => CUI.HookIdentifier
+now i'm using it in harmony patches to
+
+added warning if it's not set
+
+fixed crash in GUI_UpdateMouseOn_Postfix
+Added null checks in GUI_UpdateMouseOn_Postfix
+
+## 0.2.5.0
+Added CUI.UpdateHookIdentifier it will be set as identifier to CUI think hook, it very important to set it or hooks from different CUIs will conflict
+
+Added CUIAnimation
+Added IgnoreTransparent prop, if true mouse events will work only on not transparent sprites
+Added Transparency prop, it multiplies BackgroundColor.A and is propagated to Children
+
+Made CUISpite an object... again
+Added Rotation, Origin and Offset to CUISprite
+Added option to load CUISprites with base folder, which allows deserialized components to load sprites from the same folder with relative paths
+
+Added CUIMenu, check "Custom Menus" mod, CUIRadialMenu (the ugly brother of CUIMenu)
+
+Added more docs
+
+## 0.2.4.0
+
+"Fixed" cursed bug that made MainComponents become in GameMain.Update patch after multiple lobbies in compiled version
+But this "fix" seems to decrease update smoothness, so i might rethink later
+Set CUI.UseCursedPatches to true if you're not affraid
+
+Added more performance measurements, shortcutted dumb class scanning in CUILuaRegistrar that happened even if you didn't use lua
+
+Buttons now update their color only on events and not in draw cycle, added AutoUpdateColor to prevent this color change in case you want to control it manually (why?)
+
+Added confusing event InvokeOnMouseOff which is symmetrical to InvokeOnMouseOn but happens on previous MouseOn list, and it turned out to be essential to e.g. switch color when mouse leaves a button
+
+You can now limit resize directions with CUIComponent.ResizeDirection
+
+Fixed forsed size not reseting after removing a textblock
+
+Added cuiprinttree command along with cuidraworder
+
+
 ## 0.2.3.0
 
 Made CUITextInput, CUITickBox and CUISlider use commands and consume data

@@ -13,7 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.IO;
 using System.Diagnostics;
-namespace QICrabUI
+namespace CrabUI
 {
   public class CUIStyleLoader
   {
@@ -55,9 +55,8 @@ namespace QICrabUI
       // It's heavy because CUITypeMetaData.Get creates defaults here
       foreach (Type T in DefaultStyles.Keys)
       {
-        CUITypeMetaData.Get(T).defaultStyle = DefaultStyles[T];
+        CUITypeMetaData.Get(T).DefaultStyle = DefaultStyles[T];
       }
-      CUIGlobalStyleResolver.OnDefaultStyleChanged(typeof(CUIComponent));
 
       sw.Stop();
       CUIDebug.Log($"Applying default styles took {sw.ElapsedMilliseconds}ms");

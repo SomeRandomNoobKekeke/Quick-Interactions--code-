@@ -8,7 +8,7 @@ using System.IO;
 using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
-using QICrabUI;
+using CrabUI;
 using QIDependencyInjection;
 using Barotrauma.Extensions;
 

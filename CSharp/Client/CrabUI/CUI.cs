@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly: IgnoresAccessChecksTo("DedicatedServer")]
 [assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// In fact a static class managing static things
@@ -106,7 +106,23 @@ namespace QICrabUI
     /// This affects logging
     /// </summary>
     public static bool Debug;
-    public static Harmony harmony = new Harmony("crabui");
+    /// <summary>
+    /// Will break the mod if it's compiled
+    /// </summary>
+    public static bool UseCursedPatches { get; set; } = false;
+    /// <summary>
+    /// It's important to set it, if 2 CUIs try to add a hook with same id one won't be added
+    /// </summary>
+    public static string HookIdentifier
+    {
+      get => hookIdentifier;
+      set
+      {
+        hookIdentifier = value?.Replace(' ', '_');
+      }
+    }
+    private static string hookIdentifier = "";
+    public static Harmony harmony;
     public static Random Random = new Random();
 
     /// <summary>
@@ -165,7 +181,8 @@ namespace QICrabUI
       if (Instance == null)
       {
         Stopwatch sw = Stopwatch.StartNew();
-
+        if (HookIdentifier == null || HookIdentifier == "") CUI.Warning($"Warning: CUI.HookIdentifier is not set, this mod may conflict with other GUI mods");
+        harmony = new Harmony($"CrabUI.{HookIdentifier}");
         InitStatic();
         // this should init only static stuff that doesn't depend on instance
         OnInit?.Invoke();
@@ -209,12 +226,12 @@ namespace QICrabUI
       {
         RemoveCommands();
         harmony.UnpatchAll(harmony.Id);
-
         TextureManager.Dispose();
         CUIDebugEventComponent.CapturedIDs.Clear();
         OnDispose?.Invoke();
 
         Instance.isBlockingPredicates.Clear();
+        Errors.Clear();
 
         Instance.LuaRegistrar.Deregister();
 
@@ -229,13 +246,18 @@ namespace QICrabUI
 
     //HACK Why it's set to run in static constructor?
     // it runs perfectly fine in CUI.Initialize
+    //TODO component inits doesn't depend on the order
+    // why am i responsible for initing them here?
     internal static void InitStatic()
     {
       CUIExtensions.InitStatic();
+      CUIInterpolate.InitStatic();
+      CUIAnimation.InitStatic();
       CUIReflection.InitStatic();
       CUIMultiModResolver.InitStatic();
       CUIPalette.InitStatic();
       CUIMap.CUIMapLink.InitStatic();
+      CUIMenu.InitStatic();
       CUIComponent.InitStatic();
       CUITypeMetaData.InitStatic();
       CUIStyleLoader.InitStatic();

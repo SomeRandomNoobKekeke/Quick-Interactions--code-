@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Props implementing this will be bound to their host 

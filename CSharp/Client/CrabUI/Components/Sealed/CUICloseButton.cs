@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml.Linq;
 using Barotrauma.Extensions;
-namespace QICrabUI
+namespace CrabUI
 {
   // hmm, idk if this should be a prefab or component
   // it's too small for component

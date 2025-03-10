@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.CompilerServices;
 
-namespace QICrabUI
+namespace CrabUI
 {
 
   public class WeakCatalog<TKey, TValue> where TValue : class

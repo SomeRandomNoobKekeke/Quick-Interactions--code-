@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUI
   {
@@ -48,7 +48,16 @@ namespace QICrabUI
         _ => sprite.SourceRect,
       };
 
-      sb.Draw(sprite.Texture, cuirect.Box, sourceRect, cl, 0.0f, Vector2.Zero, sprite.Effects, depth);
+      Rectangle rect = new Rectangle(
+        (int)(cuirect.Left + sprite.Offset.X * cuirect.Width),
+        (int)(cuirect.Top + sprite.Offset.Y * cuirect.Height),
+        (int)(cuirect.Width),
+        (int)(cuirect.Height)
+      );
+
+      //rect = cuirect.Box;
+
+      sb.Draw(sprite.Texture, rect, sourceRect, cl, sprite.Rotation, sprite.Origin, sprite.Effects, depth);
     }
 
     //TODO i can calculate those rects in advance

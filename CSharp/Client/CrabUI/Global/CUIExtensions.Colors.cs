@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using HarmonyLib;
 
-namespace QICrabUI
+namespace CrabUI
 {
   // [CUIInternal]
   public static partial class CUIExtensions

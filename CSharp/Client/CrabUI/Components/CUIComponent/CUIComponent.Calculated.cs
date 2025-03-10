@@ -15,7 +15,7 @@ using System.Xml;
 using System.Xml.Linq;
 using HarmonyLib;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUIComponent : IDisposable
   {
@@ -105,6 +105,10 @@ namespace QICrabUI
     protected CUIRect OutlineBox { get; set; }
     internal Rectangle? ScissorRect { get; set; }
     /// <summary>
+    /// Buffer for texture data, for IgnoreTransparent checks
+    /// </summary>
+    protected Color[] TextureData;
+    /// <summary>
     /// Calculated prop, position on real screen in pixels
     /// Should be fully calculated after CUIMainComponent.Update
     /// </summary>
@@ -114,6 +118,8 @@ namespace QICrabUI
       get => real;
       set => SetReal(value);
     }
+
+
 
     private CUIRect real; internal void SetReal(CUIRect value, [CallerMemberName] string memberName = "")
     {

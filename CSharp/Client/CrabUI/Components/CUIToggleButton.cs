@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Barotrauma.Extensions;
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// A button which can be on and off  

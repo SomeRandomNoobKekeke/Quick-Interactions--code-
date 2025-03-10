@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Contains all logic for resolving styles in the framework
@@ -23,6 +23,7 @@ namespace QICrabUI
       CUITypeMetaData meta = CUITypeMetaData.Get(host.GetType());
       host.ResolvedStyle = CUIStyle.Merge(meta.ResolvedDefaultStyle, host.Style);
       ApplyStyleOn(host.ResolvedStyle, host);
+      host.InvokeOnStyleApplied();
     }
 
     public static void OnComponentStylePropChanged(CUIComponent host, string key)
@@ -40,6 +41,7 @@ namespace QICrabUI
       }
 
       ApplyStylePropOn(host.ResolvedStyle, key, host, meta);
+      host.InvokeOnStyleApplied();
     }
 
     public static void OnPaletteChange(CUIPalette palette)
@@ -77,7 +79,7 @@ namespace QICrabUI
       }
       catch (Exception e)
       {
-        CUI.Warning(e);
+        CUI.Warning($"OnDefaultStyleChanged| {e}");
       }
     }
 

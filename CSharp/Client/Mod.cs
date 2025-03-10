@@ -9,7 +9,7 @@ using Barotrauma;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using QICrabUI;
+using CrabUI;
 using QIDependencyInjection;
 
 namespace QuickInteractions

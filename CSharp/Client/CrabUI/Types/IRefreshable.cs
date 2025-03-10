@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// For stuff that should be in some way refreshed  

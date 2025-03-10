@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Swipable and zoomable plane  
@@ -187,7 +187,7 @@ namespace QICrabUI
     }
 
 
-    public override void FromXML(XElement element)
+    public override void FromXML(XElement element, string baseFolder = null)
     {
       foreach (XElement childElement in element.Element("Children").Elements())
       {

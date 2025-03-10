@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Same as Range but with normal ints

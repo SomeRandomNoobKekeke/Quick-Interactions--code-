@@ -10,7 +10,7 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 using System.IO;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUI
   {
@@ -80,22 +80,6 @@ namespace QICrabUI
 
         Log($"{fi.Directory.Name}/{fi.Name}:{lineNumber}", Color.Yellow * 0.5f);
         Log(msg, Color.Yellow);
-      }
-    }
-
-    /// <summary>
-    /// Prints debug error message with source path
-    /// Works only if debug is true
-    /// </summary>
-    /// <param name="msg"></param>
-    public static void Error(object msg, [CallerFilePath] string source = "", [CallerLineNumber] int lineNumber = 0)
-    {
-      if (Debug == true)
-      {
-        var fi = new FileInfo(source);
-
-        Log($"{fi.Directory.Name}/{fi.Name}:{lineNumber}", Color.Orange * 0.5f);
-        Log(msg, Color.Orange);
       }
     }
   }

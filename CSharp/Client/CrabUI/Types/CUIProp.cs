@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace QICrabUI
+namespace CrabUI
 {
   /// <summary>
   /// Wrapper object for prop value, setters, side effects, metadata etc.

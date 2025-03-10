@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public partial class CUIComponent
   {
@@ -52,6 +52,7 @@ namespace QICrabUI
     /// Don't inherit parent ZIndex
     /// </summary>
     [CUISerializable] public bool IgnoreParentZIndex { get; set; }
+    [CUISerializable] public bool IgnoreParentTransparency { get; set; }
 
     /// <summary>
     /// Invisible components are not drawn, but still can be interacted with

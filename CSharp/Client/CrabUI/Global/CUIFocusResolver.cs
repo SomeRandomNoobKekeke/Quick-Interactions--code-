@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using EventInput;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public class CUIFocusResolver
   {

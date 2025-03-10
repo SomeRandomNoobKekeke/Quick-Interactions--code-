@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QICrabUI
+namespace CrabUI
 {
   public enum CUITextAlign { Start, Center, End, }
   public enum CUISide { Top, Right, Bottom, Left, }

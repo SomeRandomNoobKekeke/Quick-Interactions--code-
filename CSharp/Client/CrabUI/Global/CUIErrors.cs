@@ -21,7 +21,7 @@ namespace CrabUI
       if (!Errors.ContainsKey(s)) Errors[s] = 1;
       else Errors[s] = Errors[s] + 1;
       if (silent) return;
-      if (Errors[s] <= maxPrints) Log($"CUI: {s}", Color.Orange);
+      if (Errors[s] <= maxPrints) Log($"CUI: {s} x{Errors[s]}", Color.Orange);
     }
   }
 }

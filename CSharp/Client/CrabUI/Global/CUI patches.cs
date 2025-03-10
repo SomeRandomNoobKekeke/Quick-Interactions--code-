@@ -19,6 +19,8 @@ namespace CrabUI
   {
     private static void PatchAll()
     {
+      harmony.UnpatchAll(harmony.Id);
+
       harmony.Patch(
         original: typeof(GUI).GetMethod("Draw", AccessTools.all),
         prefix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_Draw_Prefix", AccessTools.all))
@@ -36,25 +38,24 @@ namespace CrabUI
           original: typeof(GameMain).GetMethod("Update", AccessTools.all),
           postfix: new HarmonyMethod(typeof(CUI).GetMethod("GameMain_Update_Postfix", AccessTools.all))
         );
+
+        // This is also cursed
+        harmony.Patch(
+          original: typeof(GUI).GetMethod("UpdateMouseOn", AccessTools.all),
+          postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_UpdateMouseOn_Postfix", AccessTools.all))
+        );
       }
       else
       {
         GameMain.LuaCs.Hook.Add("think", $"CrabUI.{HookIdentifier}", (object[] args) =>
         {
+          CUIUpdateMouseOn();
           CUIUpdate(Timing.TotalTime);
           return null;
         });
       }
 
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("UpdateMouseOn", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_UpdateMouseOn_Prefix", AccessTools.all))
-      );
 
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("UpdateMouseOn", AccessTools.all),
-        postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_UpdateMouseOn_Postfix", AccessTools.all))
-      );
 
       harmony.Patch(
         original: typeof(Camera).GetMethod("MoveCamera", AccessTools.all),
@@ -108,12 +109,14 @@ namespace CrabUI
       CUI.InvokeOnPauseMenuToggled();
     }
 
+
     private static void GameMain_Update_Postfix(GameTime gameTime)
     {
       CUIUpdate(gameTime.TotalGameTime.TotalSeconds);
     }
     private static void CUIUpdate(double time)
     {
+      if (Main == null) CUI.Error($"CUIUpdate: CUI.Main in {HookIdentifier} was null, tell the dev", 20);
       try
       {
         CUIAnimation.UpdateAllAnimations(time);
@@ -139,14 +142,14 @@ namespace CrabUI
       catch (Exception e) { CUI.Warning($"CUI: {e}"); }
     }
 
-    private static void GUI_UpdateMouseOn_Prefix(ref GUIComponent __result)
-    {
-      //if (TopMain.MouseOn != null && TopMain.MouseOn != TopMain) GUI.MouseOn = CUIComponent.dummyComponent;
-    }
-
     private static void GUI_UpdateMouseOn_Postfix(ref GUIComponent __result)
     {
-      if (Main == null) CUI.Error($"GUI_UpdateMouseOn_Postfix: CUI.Main in {HookIdentifier} was null, tell the dev");
+      CUIUpdateMouseOn();
+    }
+
+    private static void CUIUpdateMouseOn()
+    {
+      if (Main == null) CUI.Error($"CUIUpdateMouseOn: CUI.Main in {HookIdentifier} was null, tell the dev", 20);
       if (GUI.MouseOn == null && Main != null && Main.MouseOn != null && Main.MouseOn != Main) GUI.MouseOn = CUIComponent.dummyComponent;
       if (TopMain != null && TopMain.MouseOn != null && TopMain.MouseOn != TopMain) GUI.MouseOn = CUIComponent.dummyComponent;
     }

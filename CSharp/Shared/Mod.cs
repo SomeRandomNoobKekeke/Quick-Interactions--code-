@@ -55,10 +55,11 @@ namespace QuickInteractions
 
       Stopwatch sw2 = Stopwatch.StartNew();
 #if CLIENT
-      //CUI.Debug = true;
+      CUI.Debug = Paths.IsInLocalMods;
       CUI.ModDir = Paths.ModDir;
       CUI.AssetsPath = Paths.AssetsFolder;
       CUI.HookIdentifier = Name;
+      //CUI.UseCursedPatches = true;
       CUI.Initialize();
 #endif
       sw2.Stop();

@@ -17,9 +17,37 @@ namespace CrabUI
 {
   public partial class CUI
   {
+    public static void CheckOtherPatches()
+    {
+      CUI.Log($"Harmony.GetAllPatchedMethods:", Color.Lime);
+      foreach (MethodBase mb in Harmony.GetAllPatchedMethods())
+      {
+        Patches patches = Harmony.GetPatchInfo(mb);
+
+        if (patches.Prefixes.Count() > 0 || patches.Postfixes.Count() > 0)
+        {
+          CUI.Log($"{mb.DeclaringType}.{mb.Name}:");
+          if (patches.Prefixes.Count() > 0)
+          {
+            CUI.Log($"    Prefixes:");
+            foreach (Patch patch in patches.Prefixes) { CUI.Log($"        {patch.owner}"); }
+          }
+
+          if (patches.Postfixes.Count() > 0)
+          {
+            CUI.Log($"    Postfixes:");
+            foreach (Patch patch in patches.Postfixes) { CUI.Log($"        {patch.owner}"); }
+          }
+        }
+      }
+    }
+
+
     private static void PatchAll()
     {
-      harmony.UnpatchAll(harmony.Id);
+      CUIDebug.Log($"Pathing stuff with {harmony.Id}", Color.Lime);
+      CheckOtherPatches();
+
 
       harmony.Patch(
         original: typeof(GUI).GetMethod("Draw", AccessTools.all),

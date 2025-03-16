@@ -46,7 +46,7 @@ namespace CrabUI
     private static void PatchAll()
     {
       CUIDebug.Log($"Pathing stuff with {harmony.Id}", Color.Lime);
-      CheckOtherPatches();
+      //CheckOtherPatches();
 
 
       harmony.Patch(
@@ -75,7 +75,7 @@ namespace CrabUI
       }
       else
       {
-        GameMain.LuaCs.Hook.Add("think", $"CrabUI.{HookIdentifier}", (object[] args) =>
+        GameMain.LuaCs.Hook.Add("think", CUIHookID, (object[] args) =>
         {
           CUIUpdateMouseOn();
           CUIUpdate(Timing.TotalTime);
@@ -104,6 +104,13 @@ namespace CrabUI
         original: typeof(GUI).GetMethod("get_InputBlockingMenuOpen", AccessTools.all),
         postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_InputBlockingMenuOpen_Postfix", AccessTools.all))
       );
+
+
+      // GameMain.LuaCs.Hook.Add("GUI_Draw_Postfix", "123", (object[] args) =>
+      // {
+      //   CUI.Log("gugugu");
+      //   return null;
+      // });
     }
 
     public static void GUI_InputBlockingMenuOpen_Postfix(ref bool __result)

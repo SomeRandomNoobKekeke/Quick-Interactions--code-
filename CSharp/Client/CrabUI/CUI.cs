@@ -136,6 +136,7 @@ namespace CrabUI
       }
     }
     private static string hookIdentifier = "";
+    public static string CUIHookID => $"CrabUI.{HookIdentifier}";
     public static Harmony harmony;
     public static Random Random = new Random();
 
@@ -211,7 +212,7 @@ namespace CrabUI
 
         sw.Restart();
 
-        harmony = new Harmony($"CrabUI.{HookIdentifier}");
+        harmony = new Harmony(CUIHookID);
         PatchAll();
         CUIDebug.Log($"CUI.PatchAll took {sw.ElapsedMilliseconds}ms");
 

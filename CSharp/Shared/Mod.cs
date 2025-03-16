@@ -32,7 +32,6 @@ namespace QuickInteractions
 
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
-
     public ModPaths Paths { get; set; }
 
     public event Action OnPluginLoad;
@@ -56,7 +55,7 @@ namespace QuickInteractions
 
       Stopwatch sw2 = Stopwatch.StartNew();
 #if CLIENT
-      CUI.Debug = Paths.IsInLocalMods;
+      //CUI.Debug = Paths.IsInLocalMods;
       CUI.ModDir = Paths.ModDir;
       CUI.AssetsPath = Paths.AssetsFolder;
       CUI.HookIdentifier = Name;

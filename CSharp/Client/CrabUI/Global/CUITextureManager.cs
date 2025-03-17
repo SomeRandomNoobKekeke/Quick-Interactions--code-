@@ -94,6 +94,12 @@ namespace CrabUI
 
     public Texture2D GetTexture(string path)
     {
+      if (LoadedTextures == null)
+      {
+        CUI.Error($"LoadedTextures was null");
+        return BackupTexture;
+      }
+
       if (LoadedTextures.ContainsKey(path)) return LoadedTextures[path];
 
       Texture2D loaded = null;

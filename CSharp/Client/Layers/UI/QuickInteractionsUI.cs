@@ -161,40 +161,49 @@ namespace QuickInteractions
 
       Debouncer.Debounce("refresh", 100, () =>
       {
-        if (GUI.DisableHUD)
+        try
         {
-          ScheduleRefresh(500);
-          return;
+          if (this["layout"] == null) return;
+
+          if (GUI.DisableHUD)
+          {
+            ScheduleRefresh(500);
+            return;
+          }
+          Debugger.Log("Refresh", DebugLevel.UIRefresh);
+
+          bool onTheLeft = Real.Left < CUI.GameScreenSize.X / 2.0f;
+
+          this["layout"].RemoveAllChildren();
+
+          foreach (Character character in QuickTalk.WantToTalk)
+          {
+            this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
+          }
+
+          foreach (Character character in QuickTalk.Merchants)
+          {
+            this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
+          }
+
+          if (Fabricators.OutpostFabricator != null)
+          {
+            this["layout"].Append(new FabricatorButton(Fabricators.OutpostFabricator, ButtonDirection));
+          }
+
+          if (Fabricators.OutpostMedFabricator != null)
+          {
+            this["layout"].Append(new FabricatorButton(Fabricators.OutpostMedFabricator, ButtonDirection));
+          }
+
+          if (Fabricators.OutpostDeconstructor != null)
+          {
+            this["layout"].Append(new FabricatorButton(Fabricators.OutpostDeconstructor, ButtonDirection));
+          }
         }
-        Debugger.Log("Refresh", DebugLevel.UIRefresh);
-
-        bool onTheLeft = Real.Left < CUI.GameScreenSize.X / 2.0f;
-
-        this["layout"].RemoveAllChildren();
-
-        foreach (Character character in QuickTalk.WantToTalk)
+        catch (Exception e)
         {
-          this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
-        }
 
-        foreach (Character character in QuickTalk.Merchants)
-        {
-          this["layout"].Append(new QuickTalkButton(character, ButtonDirection));
-        }
-
-        if (Fabricators.OutpostFabricator != null)
-        {
-          this["layout"].Append(new FabricatorButton(Fabricators.OutpostFabricator, ButtonDirection));
-        }
-
-        if (Fabricators.OutpostMedFabricator != null)
-        {
-          this["layout"].Append(new FabricatorButton(Fabricators.OutpostMedFabricator, ButtonDirection));
-        }
-
-        if (Fabricators.OutpostDeconstructor != null)
-        {
-          this["layout"].Append(new FabricatorButton(Fabricators.OutpostDeconstructor, ButtonDirection));
         }
       });
     }

@@ -23,11 +23,6 @@ namespace CrabUI
   /// </summary>
   public partial class CUI
   {
-    static CUI()
-    {
-      CUI.Log($"static CUI() {Assembly.GetExecutingAssembly()}", Color.Lime);
-    }
-
     public static Vector2 GameScreenSize => new Vector2(GameMain.GraphicsWidth, GameMain.GraphicsHeight);
     public static Rectangle GameScreenRect => new Rectangle(0, 0, GameMain.GraphicsWidth, GameMain.GraphicsHeight);
 
@@ -102,9 +97,8 @@ namespace CrabUI
     public static CUIInput Input => Instance?.input;
     /// <summary>
     /// Safe texture manager
-    /// </summary>
-    public static CUITextureManager TextureManager = new CUITextureManager();
-    //public static CUITextureManager TextureManager => Instance?.textureManager;
+    /// </summary
+    public static CUITextureManager TextureManager => Instance?.textureManager;
     /// <summary>
     /// Adapter to vanilla focus system, don't use
     /// </summary>
@@ -148,6 +142,7 @@ namespace CrabUI
     /// Called on last Dispose
     /// </summary>
     public static event Action OnDispose;
+    public static bool Disposed { get; set; } = true;
     public static event Action<TextInputEventArgs> OnWindowTextInput;
     public static event Action<TextInputEventArgs> OnWindowKeyDown;
     //public static event Action<TextInputEventArgs> OnWindowKeyUp;
@@ -172,20 +167,29 @@ namespace CrabUI
     /// </summary>
     public static int UserCount = 0;
 
+
+
     /// <summary>
     /// An object that contains current mouse and keyboard states
     /// It scans states at the start on Main.Update
     /// </summary>
     private CUIInput input = new CUIInput();
-    private CUIMainComponent main = new CUIMainComponent() { AKA = "Main Component" };
-    private CUIMainComponent topMain = new CUIMainComponent() { AKA = "Top Main Component" };
-    //private CUITextureManager textureManager = new CUITextureManager();
+    private CUIMainComponent main;
+    private CUIMainComponent topMain;
+    private CUITextureManager textureManager = new CUITextureManager();
     private CUIFocusResolver focusResolver = new CUIFocusResolver();
     private CUILuaRegistrar LuaRegistrar = new CUILuaRegistrar();
 
     public static void ReEmitWindowTextInput(object sender, TextInputEventArgs e) => OnWindowTextInput?.Invoke(e);
     public static void ReEmitWindowKeyDown(object sender, TextInputEventArgs e) => OnWindowKeyDown?.Invoke(e);
     //public static void ReEmitWindowKeyUp(object sender, TextInputEventArgs e) => OnWindowKeyUp?.Invoke(e);
+
+
+    private void CreateMains()
+    {
+      main = new CUIMainComponent() { AKA = "Main Component" };
+      topMain = new CUIMainComponent() { AKA = "Top Main Component" };
+    }
 
     /// <summary>
     /// Should be called in IAssemblyPlugin.Initialize 
@@ -196,14 +200,17 @@ namespace CrabUI
       CUIDebug.Log($"CUI.Initialize {HookIdentifier} Instance:[{Instance?.GetHashCode()}] UserCount:{UserCount}", Color.Lime);
       if (Instance == null)
       {
+        Disposed = false;
+        Instance = new CUI();
+
         Stopwatch sw = Stopwatch.StartNew();
-        if (HookIdentifier == null || HookIdentifier == "") CUI.Warning($"Warning: CUI.HookIdentifier is not set, this mod may conflict with other GUI mods");
+        if (HookIdentifier == null || HookIdentifier == "") CUI.Warning($"Warning: CUI.HookIdentifier is not set, this mod may conflict with other mods that use CUI");
 
         InitStatic();
         // this should init only static stuff that doesn't depend on instance
         OnInit?.Invoke();
 
-        Instance = new CUI();
+        Instance.CreateMains();
 
         GameMain.Instance.Window.TextInput += ReEmitWindowTextInput;
         GameMain.Instance.Window.KeyDown += ReEmitWindowKeyDown;
@@ -251,6 +258,7 @@ namespace CrabUI
         TextureManager.Dispose();
         CUIDebugEventComponent.CapturedIDs.Clear();
         OnDispose?.Invoke();
+        Disposed = true;
 
         Instance.isBlockingPredicates.Clear();
         Errors.Clear();

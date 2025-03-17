@@ -37,10 +37,7 @@ namespace QuickInteractions
       };
     }
 
-    public static CUISprite GetIcon(int x, int y)
-    {
-      return new CUISprite("Interaction icons.png", new Rectangle(x * 34, y * 19, 34, 19));
-    }
+    public static CUISprite GetIcon(int x, int y) => QuickTalkButton.GetIcon(x, y);
 
     public static string GetInteractionText(Item item)
     {
@@ -79,7 +76,8 @@ namespace QuickInteractions
         Border = new CUIBorder(),
         BackgroundSprite = GetIcon(item),
         MasterColorOpaque = GetButtonColor(item),
-        ResizeToSprite = true,
+        Absolute = QuickTalkButton.IconSize,
+        //ResizeToSprite = true,
       };
 
       Icon.OnMouseDown += (e) =>
@@ -91,6 +89,7 @@ namespace QuickInteractions
       {
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(item),
+        TextScale = QuickTalkButton.TextScale,
       };
 
       this.item = item;

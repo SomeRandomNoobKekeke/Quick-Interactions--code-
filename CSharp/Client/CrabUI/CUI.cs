@@ -38,6 +38,7 @@ namespace CrabUI
       }
     }
 
+    public static bool UseLua { get; set; } = true;
     public static string LuaFolder { get; set; }
 
     private static string assetsPath;
@@ -103,6 +104,7 @@ namespace CrabUI
     /// Adapter to vanilla focus system, don't use
     /// </summary>
     public static CUIFocusResolver FocusResolver => Instance?.focusResolver;
+    public static CUILuaRegistrar LuaRegistrar => Instance?.luaRegistrar;
 
     public static CUIComponent FocusedComponent
     {
@@ -178,7 +180,7 @@ namespace CrabUI
     private CUIMainComponent topMain;
     private CUITextureManager textureManager = new CUITextureManager();
     private CUIFocusResolver focusResolver = new CUIFocusResolver();
-    private CUILuaRegistrar LuaRegistrar = new CUILuaRegistrar();
+    private CUILuaRegistrar luaRegistrar = new CUILuaRegistrar();
 
     public static void ReEmitWindowTextInput(object sender, TextInputEventArgs e) => OnWindowTextInput?.Invoke(e);
     public static void ReEmitWindowKeyDown(object sender, TextInputEventArgs e) => OnWindowKeyDown?.Invoke(e);
@@ -226,7 +228,7 @@ namespace CrabUI
         AddCommands();
 
         sw.Restart();
-        Instance.LuaRegistrar.Register();
+        LuaRegistrar.Register();
         CUIDebug.Log($"CUI.LuaRegistrar.Register took {sw.ElapsedMilliseconds}ms");
       }
 
@@ -263,7 +265,7 @@ namespace CrabUI
         Instance.isBlockingPredicates.Clear();
         Errors.Clear();
 
-        Instance.LuaRegistrar.Deregister();
+        LuaRegistrar.Deregister();
 
         Instance = null;
         UserCount = 0;

@@ -60,6 +60,7 @@ namespace QuickInteractions
       CUI.AssetsPath = Paths.AssetsFolder;
       CUI.HookIdentifier = Name;
       //CUI.UseCursedPatches = true;
+      CUI.UseLua = false;
       CUI.Initialize();
 #endif
       sw2.Stop();

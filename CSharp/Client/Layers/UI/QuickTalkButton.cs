@@ -15,6 +15,17 @@ namespace QuickInteractions
 {
   public class QuickTalkButton : CUIHorizontalList
   {
+    public static float MotinorScale = 1.0f;
+    public static Point IconTextureSize = new Point(139, 75);
+    public static float IconProportions = (float)IconTextureSize.X / (float)IconTextureSize.Y;
+    public static float ScreenHeightToIconHeight = (float)IconTextureSize.Y / 3072.0f * MotinorScale;
+    public static CUINullRect IconSize => new CUINullRect(null, null,
+      CUI.GameScreenSize.Y * ScreenHeightToIconHeight * IconProportions,
+      CUI.GameScreenSize.Y * ScreenHeightToIconHeight
+    );
+
+    public static float TextScale => CUI.GameScreenSize.Y / 840.0f * MotinorScale;
+
     public static Color GetButtonColor(Character character)
     {
       if (character.IsDead) return new Color(255, 0, 0);
@@ -63,7 +74,7 @@ namespace QuickInteractions
 
     public static CUISprite GetIcon(int x, int y = 0)
     {
-      return new CUISprite("Interaction icons.png", new Rectangle(x * 34, y * 19, 34, 19));
+      return new CUISprite("Interaction icons.png", new Rectangle(x * IconTextureSize.X, y * IconTextureSize.Y, IconTextureSize.X, IconTextureSize.Y));
     }
 
     public static string GetInteractionText(Character character)
@@ -112,7 +123,8 @@ namespace QuickInteractions
         Border = new CUIBorder(),
         BackgroundSprite = GetIcon(character),
         MasterColorOpaque = GetButtonColor(character),
-        ResizeToSprite = true,
+        //ResizeToSprite = true,
+        Absolute = IconSize,
       };
 
       Icon.OnMouseDown += (e) =>
@@ -124,6 +136,7 @@ namespace QuickInteractions
       {
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(character),
+        TextScale = TextScale,
       };
 
       this.character = character;

@@ -57,34 +57,18 @@ namespace CrabUI
         return null;
       });
 
-      if (UseCursedPatches)
+      GameMain.LuaCs.Hook.Add("think", CUIHookID, (object[] args) =>
       {
-        // This is cursed
-        harmony.Patch(
-          original: typeof(GameMain).GetMethod("Update", AccessTools.all),
-          postfix: new HarmonyMethod(typeof(CUI).GetMethod("GameMain_Update_Postfix", AccessTools.all))
-        );
-
-        // This is also cursed
-        harmony.Patch(
-          original: typeof(GUI).GetMethod("UpdateMouseOn", AccessTools.all),
-          postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_UpdateMouseOn_Postfix", AccessTools.all))
-        );
-      }
-      else
-      {
-        GameMain.LuaCs.Hook.Add("think", CUIHookID, (object[] args) =>
-        {
-          CUIUpdateMouseOn();
-          CUIUpdate(Timing.TotalTime);
-          return null;
-        });
-      }
-
-      GameMain.LuaCs.Hook.Add("Camera_MoveCamera_Prefix", CUIHookID, (object[] args) =>
-      {
-        return Camera_MoveCamera_Prefix(); ;
+        CUIUpdateMouseOn();
+        CUIUpdate(Timing.TotalTime);
+        return null;
       });
+
+      // this hook seems to do nothing
+      // GameMain.LuaCs.Hook.Add("Camera_MoveCamera_Prefix", CUIHookID, (object[] args) =>
+      // {
+      //   return Camera_MoveCamera_Prefix(); ;
+      // });
 
       GameMain.LuaCs.Hook.Add("KeyboardDispatcher_set_Subscriber_Prefix", CUIHookID, (object[] args) =>
       {

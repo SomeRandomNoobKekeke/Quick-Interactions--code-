@@ -15,12 +15,19 @@ using EventInput;
 
 namespace QuickInteractions
 {
-  public static class HarmonyExtensions
+  /// <summary>
+  /// It's not used
+  /// </summary>
+  public class AdditionalHooks : IAssemblyPlugin
   {
+    public static string HarmonyID = "AdditionalHooks";
+    public static Harmony harmony = new Harmony(HarmonyID);
+
+    // For some reason it doesn't work as extension
     /// <summary>
     /// Patch only if not patched already
     /// </summary>
-    public static void EnsurePatch(this Harmony harmony, MethodBase original, MethodInfo prefix = null, MethodInfo postfix = null)
+    public static void EnsurePatch(Harmony harmony, MethodBase original, MethodInfo prefix = null, MethodInfo postfix = null)
     {
       Patches patches = Harmony.GetPatchInfo(original);
       if (patches != null && patches.Postfixes.Any(patch => patch.owner == harmony.Id)) return;
@@ -30,43 +37,37 @@ namespace QuickInteractions
         postfix is null ? null : new HarmonyMethod(postfix)
       );
     }
-  }
-
-  public class AdditionalHooks : IAssemblyPlugin
-  {
-    public static string HarmonyID = "AdditionalHooks";
-    public static Harmony harmony = new Harmony(HarmonyID);
 
     public void PatchAll()
     {
 #if CLIENT
       // ----------- CUI Patches -----------
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(GUI).GetMethod("Draw", AccessTools.all),
         postfix: typeof(AdditionalHooks).GetMethod("GUI_Draw_Postfix", AccessTools.all)
       );
 
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(GUI).GetMethod("DrawCursor", AccessTools.all),
         prefix: typeof(AdditionalHooks).GetMethod("GUI_DrawCursor_Prefix", AccessTools.all)
       );
 
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(Camera).GetMethod("MoveCamera", AccessTools.all),
         prefix: typeof(AdditionalHooks).GetMethod("Camera_MoveCamera_Prefix", AccessTools.all)
       );
 
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(KeyboardDispatcher).GetMethod("set_Subscriber", AccessTools.all),
         prefix: typeof(AdditionalHooks).GetMethod("KeyboardDispatcher_set_Subscriber_Prefix", AccessTools.all)
       );
 
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(GUI).GetMethod("TogglePauseMenu", AccessTools.all, new Type[] { }),
         postfix: typeof(AdditionalHooks).GetMethod("GUI_TogglePauseMenu_Postfix", AccessTools.all)
       );
 
-      harmony.EnsurePatch(
+      EnsurePatch(harmony,
         original: typeof(GUI).GetMethod("get_InputBlockingMenuOpen", AccessTools.all),
         postfix: typeof(AdditionalHooks).GetMethod("GUI_InputBlockingMenuOpen_Postfix", AccessTools.all)
       );
@@ -89,11 +90,13 @@ namespace QuickInteractions
     {
       try
       {
-        Dictionary<string, bool> result = (Dictionary<string, bool>)GameMain.LuaCs.Hook.Call("Camera_MoveCamera_Prefix", deltaTime, allowMove, allowZoom, allowInput, followSub);
+        object result = GameMain.LuaCs.Hook.Call("Camera_MoveCamera_Prefix", deltaTime, allowMove, allowZoom, allowInput, followSub);
 
-        if (result == null) return;
-        if (result.ContainsKey("allowMove")) allowZoom = result["allowMove"];
-        if (result.ContainsKey("allowZoom")) allowZoom = result["allowZoom"];
+        Log(result);
+
+        // if (result == null) return;
+        // if (result.ContainsKey("allowMove")) allowZoom = result["allowMove"];
+        // if (result.ContainsKey("allowZoom")) allowZoom = result["allowZoom"];
       }
       catch (Exception e)
       {
@@ -128,7 +131,10 @@ namespace QuickInteractions
 #endif
 
 
-    public void Initialize() => PatchAll();
+    public void Initialize()
+    {
+      // PatchAll();
+    }
     public void OnLoadCompleted() { }
     public void PreInitPatching() { }
     public void Dispose() { }

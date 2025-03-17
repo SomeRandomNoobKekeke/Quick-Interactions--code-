@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace CrabUI
+namespace QICrabUI
 {
   public class CUIDebugWindow : CUIFrame
   {

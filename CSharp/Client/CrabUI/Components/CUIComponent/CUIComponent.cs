@@ -16,7 +16,7 @@ using System.Xml.Linq;
 using HarmonyLib;
 using System.Threading;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Base class for all components

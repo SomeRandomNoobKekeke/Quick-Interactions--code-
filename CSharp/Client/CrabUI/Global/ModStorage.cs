@@ -10,7 +10,7 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 
 
-namespace CrabUI
+namespace QICrabUI
 {
   public class ModStorage
   {

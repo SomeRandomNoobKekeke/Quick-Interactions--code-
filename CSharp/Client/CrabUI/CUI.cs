@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly: IgnoresAccessChecksTo("DedicatedServer")]
 [assembly: IgnoresAccessChecksTo("BarotraumaCore")]
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// In fact a static class managing static things
@@ -132,7 +132,7 @@ namespace CrabUI
       }
     }
     private static string hookIdentifier = "";
-    public static string CUIHookID => $"CrabUI.{HookIdentifier}";
+    public static string CUIHookID => $"QICrabUI.{HookIdentifier}";
     public static Harmony harmony;
     public static Random Random = new Random();
 

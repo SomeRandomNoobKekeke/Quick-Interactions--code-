@@ -8,7 +8,7 @@ using System.IO;
 using Barotrauma;
 using Microsoft.Xna.Framework;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// WIP, can animate any property on any object

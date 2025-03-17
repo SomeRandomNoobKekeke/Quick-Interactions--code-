@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CrabUI
+namespace QICrabUI
 {
   //TODO should be 2 different structs i think
   /// <summary>

@@ -10,7 +10,7 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 using System.IO;
 
-namespace CrabUI
+namespace QICrabUI
 {
   public class CUIMultiModResolver
   {

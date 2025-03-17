@@ -4,14 +4,14 @@
 if SERVER then return end
 
 -- Global var to track already patched methods
-AdditionalHooks = {}
+if AdditionalHooks == nil then AdditionalHooks = {} end
 
 -- Harmony.Patch, only if not patched already
 local function EnsurePatch(class, method, params, patch, hookType)
   local combinedName = class .. "." .. method
   
   if AdditionalHooks[combinedName] == true then 
-    print(combinedName, " Already patched!")
+    --print(combinedName, " Already patched!")
     return 
   end
   AdditionalHooks[combinedName] = true

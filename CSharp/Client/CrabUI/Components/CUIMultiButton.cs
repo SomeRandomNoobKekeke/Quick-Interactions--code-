@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Button with multiple options

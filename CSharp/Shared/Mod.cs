@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using QIDependencyInjection;
 
 #if CLIENT
-using CrabUI;
+using QICrabUI;
 #endif
 
 namespace QuickInteractions

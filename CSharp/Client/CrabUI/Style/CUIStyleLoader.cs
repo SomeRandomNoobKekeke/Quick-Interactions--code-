@@ -13,7 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.IO;
 using System.Diagnostics;
-namespace CrabUI
+namespace QICrabUI
 {
   public class CUIStyleLoader
   {

@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Orchestrating drawing and updating of it's children  

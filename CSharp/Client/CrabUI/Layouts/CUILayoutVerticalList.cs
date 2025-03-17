@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Resizing components to it's Width and placing them sequentially

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Contains all logic for resolving styles in the framework

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.CompilerServices;
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// Offset of child components with X, Y, Z

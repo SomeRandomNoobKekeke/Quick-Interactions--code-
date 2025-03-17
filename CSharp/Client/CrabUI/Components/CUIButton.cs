@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml.Linq;
 using Barotrauma.Extensions;
-namespace CrabUI
+namespace QICrabUI
 {
   /// <summary>
   /// A button  

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace CrabUI
+namespace QICrabUI
 {
   public partial class CUI
   {

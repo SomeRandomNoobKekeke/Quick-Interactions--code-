@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using EventInput;
 using System.Windows;
 
-namespace CrabUI
+namespace QICrabUI
 {
   //TODO move all this to defauld styles
   /// <summary>

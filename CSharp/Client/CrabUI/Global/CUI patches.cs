@@ -45,19 +45,17 @@ namespace CrabUI
 
     private static void PatchAll()
     {
-      CUIDebug.Log($"Pathing stuff with {harmony.Id}", Color.Lime);
-      //CheckOtherPatches();
+      GameMain.LuaCs.Hook.Add("GUI_Draw_Prefix", CUIHookID, (object[] args) =>
+      {
+        GUI_Draw_Prefix((SpriteBatch)args.ElementAtOrDefault(0));
+        return null;
+      });
 
-
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("Draw", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_Draw_Prefix", AccessTools.all))
-      );
-
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("DrawCursor", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_DrawCursor_Prefix", AccessTools.all))
-      );
+      GameMain.LuaCs.Hook.Add("GUI_DrawCursor_Prefix", CUIHookID, (object[] args) =>
+      {
+        GUI_DrawCursor_Prefix((SpriteBatch)args.ElementAtOrDefault(0));
+        return null;
+      });
 
       if (UseCursedPatches)
       {
@@ -83,65 +81,30 @@ namespace CrabUI
         });
       }
 
-
-
-      harmony.Patch(
-        original: typeof(Camera).GetMethod("MoveCamera", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CUI).GetMethod("CUIBlockScroll", AccessTools.all))
-      );
-
-      harmony.Patch(
-        original: typeof(KeyboardDispatcher).GetMethod("set_Subscriber", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CUI).GetMethod("KeyboardDispatcher_set_Subscriber_Replace", AccessTools.all))
-      );
-
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("TogglePauseMenu", AccessTools.all, new Type[] { }),
-        postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_TogglePauseMenu_Postfix", AccessTools.all))
-      );
-
-      harmony.Patch(
-        original: typeof(GUI).GetMethod("get_InputBlockingMenuOpen", AccessTools.all),
-        postfix: new HarmonyMethod(typeof(CUI).GetMethod("GUI_InputBlockingMenuOpen_Postfix", AccessTools.all))
-      );
-
-
-      // GameMain.LuaCs.Hook.Add("GUI_Draw_Postfix", "123", (object[] args) =>
-      // {
-      //   CUI.Log("gugugu");
-      //   return null;
-      // });
-    }
-
-    public static void GUI_InputBlockingMenuOpen_Postfix(ref bool __result)
-    {
-      __result = __result || CUI.InputBlockingMenuOpen;
-    }
-
-    public static void GUI_TogglePauseMenu_Postfix()
-    {
-      try
+      GameMain.LuaCs.Hook.Add("Camera_MoveCamera_Prefix", CUIHookID, (object[] args) =>
       {
-        if (GUI.PauseMenu != null)
-        {
-          GUIFrame frame = GUI.PauseMenu;
-          GUIComponent pauseMenuInner = frame.GetChild(1);
-          GUIComponent list = frame.GetChild(1).GetChild(0);
-          GUIButton resumeButton = (GUIButton)list.GetChild(0);
+        return Camera_MoveCamera_Prefix(); ;
+      });
 
-          GUIButton.OnClickedHandler oldHandler = resumeButton.OnClicked;
+      GameMain.LuaCs.Hook.Add("KeyboardDispatcher_set_Subscriber_Prefix", CUIHookID, (object[] args) =>
+      {
+        KeyboardDispatcher_set_Subscriber_Prefix(
+          (KeyboardDispatcher)args.ElementAtOrDefault(0),
+          (IKeyboardSubscriber)args.ElementAtOrDefault(1)
+        );
+        return null;
+      });
 
-          resumeButton.OnClicked = (GUIButton button, object obj) =>
-          {
-            bool guh = oldHandler(button, obj);
-            CUI.InvokeOnPauseMenuToggled();
-            return guh;
-          };
-        }
-      }
-      catch (Exception e) { CUI.Warning(e); }
+      GameMain.LuaCs.Hook.Add("GUI_InputBlockingMenuOpen_Postfix", CUIHookID, (object[] args) =>
+      {
+        return GUI_InputBlockingMenuOpen_Postfix();
+      });
 
-      CUI.InvokeOnPauseMenuToggled();
+      GameMain.LuaCs.Hook.Add("GUI_TogglePauseMenu_Postfix", CUIHookID, (object[] args) =>
+      {
+        GUI_TogglePauseMenu_Postfix();
+        return null;
+      });
     }
 
 
@@ -189,17 +152,52 @@ namespace CrabUI
       if (TopMain != null && TopMain.MouseOn != null && TopMain.MouseOn != TopMain) GUI.MouseOn = CUIComponent.dummyComponent;
     }
 
-    private static void CUIBlockScroll(float deltaTime, ref bool allowMove, ref bool allowZoom, bool allowInput, bool? followSub)
+    private static Dictionary<string, bool> Camera_MoveCamera_Prefix()
     {
-      if (GUI.MouseOn == CUIComponent.dummyComponent) allowZoom = false;
+      if (GUI.MouseOn != CUIComponent.dummyComponent) return null;
+
+      return new Dictionary<string, bool>()
+      {
+        ["allowZoom"] = false,
+      };
     }
 
-    private static bool KeyboardDispatcher_set_Subscriber_Replace(IKeyboardSubscriber value, KeyboardDispatcher __instance)
+    private static void KeyboardDispatcher_set_Subscriber_Prefix(KeyboardDispatcher __instance, IKeyboardSubscriber value)
     {
-      if (FocusResolver == null) return true;
-      FocusResolver.OnVanillaIKeyboardSubscriberSet(value);
-      return false;
+      FocusResolver?.OnVanillaIKeyboardSubscriberSet(value);
     }
+
+    public static bool GUI_InputBlockingMenuOpen_Postfix()
+    {
+      return CUI.InputBlockingMenuOpen;
+    }
+
+    public static void GUI_TogglePauseMenu_Postfix()
+    {
+      try
+      {
+        if (GUI.PauseMenu != null)
+        {
+          GUIFrame frame = GUI.PauseMenu;
+          GUIComponent pauseMenuInner = frame.GetChild(1);
+          GUIComponent list = frame.GetChild(1).GetChild(0);
+          GUIButton resumeButton = (GUIButton)list.GetChild(0);
+
+          GUIButton.OnClickedHandler oldHandler = resumeButton.OnClicked;
+
+          resumeButton.OnClicked = (GUIButton button, object obj) =>
+          {
+            bool guh = oldHandler(button, obj);
+            CUI.InvokeOnPauseMenuToggled();
+            return guh;
+          };
+        }
+      }
+      catch (Exception e) { CUI.Warning(e); }
+
+      CUI.InvokeOnPauseMenuToggled();
+    }
+
 
   }
 }

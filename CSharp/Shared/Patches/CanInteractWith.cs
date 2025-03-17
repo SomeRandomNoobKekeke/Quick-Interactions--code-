@@ -11,7 +11,6 @@ using QIDependencyInjection;
 
 namespace QuickInteractions
 {
-
   [PatchClass]
   public class CanInteractWith
   {

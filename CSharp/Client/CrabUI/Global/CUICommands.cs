@@ -126,8 +126,12 @@ namespace CrabUI
 
     public static void Palette_Command(string[] args)
     {
-      CUIPalette palette = CUIPalette.LoadedPalettes.GetValueOrDefault(args.ElementAtOrDefault(0));
-      if (palette != null) CUIPalette.Primary = palette;
+      try
+      {
+        CUIPalette palette = CUIPalette.LoadedPalettes?.GetValueOrDefault(args.ElementAtOrDefault(0) ?? "");
+        if (palette != null) CUIPalette.Primary = palette;
+      }
+      catch (Exception e) { CUI.Warning(e); }
     }
 
 

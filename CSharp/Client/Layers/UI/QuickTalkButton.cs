@@ -127,8 +127,6 @@ namespace QuickInteractions
         Absolute = IconSize,
       };
 
-      CUI.Log(Icon.Absolute);
-
       Icon.OnMouseDown += (e) =>
       {
         DispatchUp(new CUICommand("interact", character));

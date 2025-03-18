@@ -20,8 +20,8 @@ namespace QuickInteractions
     public static float IconProportions = (float)IconTextureSize.X / (float)IconTextureSize.Y;
     public static float ScreenHeightToIconHeight = (float)IconTextureSize.Y / 3072.0f * MotinorScale;
     public static CUINullRect IconSize => new CUINullRect(null, null,
-      CUI.GameScreenSize.Y * ScreenHeightToIconHeight * IconProportions,
-      CUI.GameScreenSize.Y * ScreenHeightToIconHeight
+      (float)Math.Round(CUI.GameScreenSize.Y * ScreenHeightToIconHeight * IconProportions),
+      (float)Math.Round(CUI.GameScreenSize.Y * ScreenHeightToIconHeight)
     );
 
     public static float TextScale => CUI.GameScreenSize.Y / 840.0f * MotinorScale;
@@ -126,6 +126,8 @@ namespace QuickInteractions
         //ResizeToSprite = true,
         Absolute = IconSize,
       };
+
+      CUI.Log(Icon.Absolute);
 
       Icon.OnMouseDown += (e) =>
       {

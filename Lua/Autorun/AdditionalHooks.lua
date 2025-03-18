@@ -16,7 +16,7 @@ local function EnsurePatch(class, method, params, patch, hookType)
   end
   AdditionalHooks[combinedName] = true
 
-  Hook.Patch(class, method,params, patch, hookType)
+  Hook.Patch('AdditionalHooks', class, method,params, patch, hookType)
 end
 
 EnsurePatch("Barotrauma.GUI", "Draw", function(instance, ptable)
@@ -48,3 +48,5 @@ EnsurePatch("Barotrauma.GUI", "get_InputBlockingMenuOpen", function(instance, pt
   local isBlocking = Hook.Call("GUI_InputBlockingMenuOpen_Postfix")
   return ptable.ReturnValue or isBlocking
 end, Hook.HookMethodType.After)
+
+-- CUI.CheckPatches("GUI","TogglePauseMenu")

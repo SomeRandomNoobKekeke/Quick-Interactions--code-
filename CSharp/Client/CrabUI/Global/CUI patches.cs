@@ -17,11 +17,42 @@ namespace QICrabUI
 {
   public partial class CUI
   {
-    public static void CheckOtherPatches()
+    public static void CheckOtherPatches(string msg = "")
+    {
+      CUI.Log(msg);
+      CUI.Log($"Harmony.GetAllPatchedMethods:", Color.Lime);
+      foreach (MethodBase mb in Harmony.GetAllPatchedMethods())
+      {
+        Patches patches = Harmony.GetPatchInfo(mb);
+
+        if (patches.Prefixes.Count() > 0 || patches.Postfixes.Count() > 0)
+        {
+          CUI.Log($"{mb.DeclaringType}.{mb.Name}:");
+          if (patches.Prefixes.Count() > 0)
+          {
+            CUI.Log($"    Prefixes:");
+            foreach (Patch patch in patches.Prefixes) { CUI.Log($"        {patch.owner}"); }
+          }
+
+          if (patches.Postfixes.Count() > 0)
+          {
+            CUI.Log($"    Postfixes:");
+            foreach (Patch patch in patches.Postfixes) { CUI.Log($"        {patch.owner}"); }
+          }
+        }
+      }
+    }
+
+    public static void CheckPatches(string typeName, string methodName)
     {
       CUI.Log($"Harmony.GetAllPatchedMethods:", Color.Lime);
       foreach (MethodBase mb in Harmony.GetAllPatchedMethods())
       {
+        if (
+          !string.Equals(typeName, mb.DeclaringType.Name, StringComparison.OrdinalIgnoreCase) ||
+          !string.Equals(methodName, mb.Name, StringComparison.OrdinalIgnoreCase)
+        ) continue;
+
         Patches patches = Harmony.GetPatchInfo(mb);
 
         if (patches.Prefixes.Count() > 0 || patches.Postfixes.Count() > 0)

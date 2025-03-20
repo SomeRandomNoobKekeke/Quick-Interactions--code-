@@ -87,6 +87,7 @@ namespace QuickInteractions
         FitContent = new CUIBool2(true, true),
         Scrollable = true,
         BreakSerialization = true,
+        BottomGap = 0,
       };
 
       //SaveToFile(SavePath);

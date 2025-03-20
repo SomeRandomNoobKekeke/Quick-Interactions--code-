@@ -137,6 +137,7 @@ namespace QuickInteractions
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(character),
         TextScale = TextScale,
+        Ghost = new CUIBool2(false, true),
       };
 
       this.character = character;

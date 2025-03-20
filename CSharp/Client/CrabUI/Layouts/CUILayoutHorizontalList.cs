@@ -210,6 +210,8 @@ namespace QICrabUI
         float tw = 0;
         foreach (CUIComponent c in Host.Children)
         {
+          if (c.Ghost.X) continue;
+
           float w = 0;
           if (!c.FillEmptySpace.X)
           {
@@ -230,6 +232,8 @@ namespace QICrabUI
         float th = 0;
         foreach (CUIComponent c in Host.Children)
         {
+          if (c.Ghost.Y) continue;
+
           float h = 0;
           if (c.Absolute.Height.HasValue) h = c.Absolute.Height.Value;
           if (c.AbsoluteMin.Height.HasValue) h = Math.Max(h, c.AbsoluteMin.Height.Value);

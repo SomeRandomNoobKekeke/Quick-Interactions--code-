@@ -26,19 +26,49 @@ namespace QuickInteractions
 
     public static void Initialize()
     {
-      Mod.Harmony.Patch(
-        original: typeof(Character).GetConstructors(AccessTools.all)[1],
-        postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Constructor_Postfix"))
-      );
+      // Mod.Harmony.Patch(
+      //   original: typeof(Character).GetConstructors(AccessTools.all)[1],
+      //   postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Constructor_Postfix"))
+      // );
 
-      Mod.Harmony.Patch(
-        original: typeof(Character).GetMethod("Kill", AccessTools.all),
-        prefix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Kill_Prefix"))
-      );
+      GameMain.LuaCs.Hook.Add("character.created", Mod.Name, (object[] args) =>
+      {
+        Debugger.Log("character.created", DebugLevel.PatchExecuted);
+        if (GhostDetector.AmIDead(Mod.Instance)) return null;
+
+        Character __instance = args.ElementAtOrDefault(0) as Character;
+        if (!Utils.IsThisAnOutpost) return null;
+        Instance.OnCharacterCreated?.Invoke(__instance);
+
+        return null;
+      });
+
+      // Mod.Harmony.Patch(
+      //   original: typeof(Character).GetMethod("Kill", AccessTools.all),
+      //   prefix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Kill_Prefix"))
+      // );
+
+      GameMain.LuaCs.Hook.Add("character.death", Mod.Name, (object[] args) =>
+      {
+        Debugger.Log("character.death", DebugLevel.PatchExecuted);
+        if (GhostDetector.AmIDead(Mod.Instance)) return null;
+
+        Character __instance = args.ElementAtOrDefault(0) as Character;
+
+        if (!Utils.IsThisAnOutpost) return null;
+        Instance.OnCharacterKilled?.Invoke(__instance);
+
+        return null;
+      });
 
       Mod.Harmony.Patch(
         original: typeof(Character).GetMethod("Despawn", AccessTools.all),
         postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Despawn_Postfix"))
+      );
+
+      Mod.Harmony.Patch(
+        original: typeof(Character).GetMethod("Revive", AccessTools.all),
+        postfix: new HarmonyMethod(typeof(CustomInteractionsTracker).GetMethod("Character_Revive_Postfix"))
       );
 
       // Is it inlined lol?
@@ -80,6 +110,14 @@ namespace QuickInteractions
       Debugger.Log("Character_Kill_Prefix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       if (!__instance.IsDead) Instance.OnCharacterKilled?.Invoke(__instance);
+    }
+
+    public static void Character_Revive_Postfix(Character __instance)
+    {
+      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      Debugger.Log("Character_Revive_Postfix", DebugLevel.PatchExecuted);
+      if (!Utils.IsThisAnOutpost) return;
+      Instance?.OnCharacterKilled?.Invoke(__instance);
     }
 
     public static void Character_Despawn_Postfix(Character __instance, bool createNetworkEvents = true)

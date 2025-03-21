@@ -13,6 +13,10 @@ using System.Runtime.CompilerServices;
 
 namespace QuickInteractions
 {
+  // I think is is unnecessary
+  // All this stuff is inherently static, why is it injected instance?
+  // And debugger probably also should be static
+  // Lets say i was just testing dependency injection system
   [Singleton]
   public class Logger
   {

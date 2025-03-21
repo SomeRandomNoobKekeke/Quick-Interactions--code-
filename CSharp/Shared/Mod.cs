@@ -33,6 +33,7 @@ namespace QuickInteractions
     [Dependency] public GameStageTracker GameStageTracker { get; set; }
 
     public ModPaths Paths { get; set; }
+    public bool Disposed { get; set; }
 
     public event Action OnPluginLoad;
     public event Action OnPluginUnload;
@@ -48,6 +49,7 @@ namespace QuickInteractions
     {
       Stopwatch sw1 = Stopwatch.StartNew();
       Instance = this;
+      GhostDetector.Instance = this;
       AddCommands();
 
       Paths = new ModPaths(Name);
@@ -71,7 +73,7 @@ namespace QuickInteractions
       sw3.Stop();
 
       Debugger.Debug = Paths.IsInLocalMods;
-      //Debugger.CurrentLevel = DebugLevel.Performance;
+      //Debugger.CurrentLevel = DebugLevel.PatchExecuted;
 
       Debugger.Log($"AddCommands took {sw1.ElapsedMilliseconds}ms", DebugLevel.Performance);
       Debugger.Log($"CUI.Initialize() took {sw2.ElapsedMilliseconds}ms", DebugLevel.Performance);
@@ -113,6 +115,12 @@ namespace QuickInteractions
       }
     }
 
+    public static void Log(object msg, Color? color = null)
+    {
+      color ??= Color.Cyan;
+      LuaCsLogger.LogMessage($"{msg ?? "null"}", color * 0.8f, color);
+    }
+
     public void OnLoadCompleted() { }
     public void PreInitPatching() { }
     public void Dispose()
@@ -125,6 +133,8 @@ namespace QuickInteractions
       Debouncer.Dispose();
 
       Mod.Harmony.UnpatchAll(Mod.Harmony.Id);
+      Disposed = true;
+      Instance = null;
     }
   }
 }

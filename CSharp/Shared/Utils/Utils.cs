@@ -24,5 +24,13 @@ namespace QuickInteractions
     public static bool IsThisASinglePlayerCampaign => GameMain.GameSession?.GameMode is SinglePlayerCampaign;
 #endif
 
+    public static void PrintMethodParams(MethodInfo mi)
+    {
+      foreach (ParameterInfo pi in mi.GetParameters())
+      {
+        Logger.Log(pi.ParameterType);
+      }
+    }
+
   }
 }

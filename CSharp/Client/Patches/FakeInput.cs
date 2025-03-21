@@ -54,6 +54,7 @@ namespace QuickInteractions
 
     public static void Character_UpdateNetInput_Postfix(Character __instance)
     {
+      if (GhostDetector.AmIDead()) return;
       if (Instance == null) return;
       if (__instance != Character.Controlled) return;
 

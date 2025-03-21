@@ -16,6 +16,7 @@ namespace QuickInteractions
   public class GameStageTracker
   {
     [Singleton] public static GameStageTracker Instance { get; set; }
+    [Dependency] public static Debugger Debugger { get; set; }
 
 
     public event Action OnRoundStart;
@@ -25,21 +26,36 @@ namespace QuickInteractions
 
     public static void Initialize()
     {
-      Mod.Harmony.Patch(
-        original: typeof(GameSession).GetMethod("StartRound", AccessTools.all, new Type[]{
-            typeof(LevelData),
-            typeof(bool),
-            typeof(SubmarineInfo),
-            typeof(SubmarineInfo),
-          }
-        ),
-        postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_StartRound_Postfix"))
-      );
+      // Mod.Harmony.Patch(
+      //   original: typeof(GameSession).GetMethod("StartRound", AccessTools.all, new Type[]{
+      //       typeof(LevelData),
+      //       typeof(bool),
+      //       typeof(SubmarineInfo),
+      //       typeof(SubmarineInfo),
+      //     }
+      //   ),
+      //   postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_StartRound_Postfix"))
+      // );
 
-      Mod.Harmony.Patch(
-        original: typeof(GameSession).GetMethod("EndRound", AccessTools.all),
-        postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_EndRound_Postfix"))
-      );
+      // Mod.Harmony.Patch(
+      //   original: typeof(GameSession).GetMethod("EndRound", AccessTools.all),
+      //   postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_EndRound_Postfix"))
+      // );
+
+      GameMain.LuaCs.Hook.Add("roundStart", Mod.Name, (object[] args) =>
+      {
+        Debugger.Log("roundStart", DebugLevel.PatchExecuted);
+        Instance?.OnRoundStart?.Invoke();
+        Instance?.OnRoundStartOrInitialize?.Invoke();
+        return null;
+      });
+
+      GameMain.LuaCs.Hook.Add("roundEnd", Mod.Name, (object[] args) =>
+      {
+        Debugger.Log("roundEnd", DebugLevel.PatchExecuted);
+        Instance?.OnRoundEnd?.Invoke();
+        return null;
+      });
     }
 
     public static void GameSession_StartRound_Postfix()

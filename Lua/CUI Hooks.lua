@@ -1,27 +1,10 @@
--- Hooks necessary for CUI
--- apparently the only solution to https://github.com/evilfactory/LuaCsForBarotrauma/issues/245
-
 if SERVER then return end
 
--- Global var to track already patched methods
-if AdditionalHooks == nil then AdditionalHooks = {} end
-
--- Harmony.Patch, only if not patched already
-local function EnsurePatch(class, method, params, patch, hookType)
-  local combinedName = class .. "." .. method
-  
-  if AdditionalHooks[combinedName] == true then 
-    --print(combinedName, " Already patched!")
-    return 
-  end
-  AdditionalHooks[combinedName] = true
-
-  Hook.Patch('AdditionalHooks', class, method,params, patch, hookType)
-end
+require "Hooks"
 
 EnsurePatch("Barotrauma.GUI", "Draw", function(instance, ptable)
-  Hook.Call("GUI_Draw_Postfix", ptable["spriteBatch"])
-end, Hook.HookMethodType.After)
+  Hook.Call("GUI_Draw_Prefix", ptable["spriteBatch"])
+end, Hook.HookMethodType.Before)
 
 EnsurePatch("Barotrauma.GUI", "DrawCursor", function(instance, ptable)
   Hook.Call("GUI_DrawCursor_Prefix", ptable["spriteBatch"])
@@ -46,7 +29,7 @@ end, Hook.HookMethodType.After)
 
 EnsurePatch("Barotrauma.GUI", "get_InputBlockingMenuOpen", function(instance, ptable)
   local isBlocking = Hook.Call("GUI_InputBlockingMenuOpen_Postfix")
-  return ptable.ReturnValue or isBlocking
+  return ptable.ReturnValue or (isBlocking or false)
 end, Hook.HookMethodType.After)
 
 -- CUI.CheckPatches("GUI","TogglePauseMenu")

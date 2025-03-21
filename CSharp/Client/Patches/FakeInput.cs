@@ -37,8 +37,6 @@ namespace QuickInteractions
       ScheduledPackages.Enqueue(new InteractPackage(item.ID, Character.InputNetFlags.Select));
     }
 
-    public static bool FakeE { get; set; }
-
     public static void Initialize()
     {
       // Mod.Harmony.Patch(
@@ -73,10 +71,6 @@ namespace QuickInteractions
       }
     }
 
-    // public static void Character_IsKeyDown_Postfix(Character __instance, ref bool __result, InputType inputType)
-    // {
-    //   if (FakeE && inputType == InputType.Select) __result = true;
-    //   if (FakeE && inputType == InputType.Use) __result = true;
-    // }
+
   }
 }

@@ -60,12 +60,14 @@ namespace QuickInteractions
 
     public static void GameSession_StartRound_Postfix()
     {
+      if (GhostDetector.AmIDead(Mod.Instance)) return;
       Instance?.OnRoundStart?.Invoke();
       Instance?.OnRoundStartOrInitialize?.Invoke();
     }
 
     public static void GameSession_EndRound_Postfix()
     {
+      if (GhostDetector.AmIDead(Mod.Instance)) return;
       Instance?.OnRoundEnd?.Invoke();
     }
   }

@@ -26,7 +26,7 @@ namespace QuickInteractions
 
     public static bool CampaignMode_NPCInteract_Replace(CampaignMode __instance, Character npc, Character interactor)
     {
-      if (GhostDetector.AmIDead()) return true;
+      if (GhostDetector.AmIDead(Mod.Instance)) return true;
       Debugger.Log("CampaignMode_NPCInteract_Replace", DebugLevel.PatchExecuted);
       if (!npc.AllowCustomInteract) { return false; }
       if (npc.AIController is HumanAIController humanAi && !humanAi.AllowCampaignInteraction()) { return false; }

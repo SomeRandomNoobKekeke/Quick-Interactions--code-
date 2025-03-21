@@ -49,7 +49,7 @@ namespace QuickInteractions
 
     public static bool Character_CanInteractWith_Prefix(Character __instance, ref bool __result, Character c, float maxDist = 200.0f, bool checkVisibility = true, bool skipDistanceCheck = false)
     {
-      if (GhostDetector.AmIDead()) return true;
+      if (GhostDetector.AmIDead(Mod.Instance)) return true;
       if (c == __instance || __instance.Removed || !c.Enabled || !c.CanBeSelected || c.InvisibleTimer > 0.0f)
       {
         __result = false; return false;
@@ -59,7 +59,7 @@ namespace QuickInteractions
 
     public static void Character_CanInteractWith_Postfix(Character __instance, ref bool __result, Item item)
     {
-      if (GhostDetector.AmIDead()) return;
+      if (GhostDetector.AmIDead(Mod.Instance)) return;
       if (item == Fabricators?.OutpostFabricator) __result = true;
       if (item == Fabricators?.OutpostDeconstructor) __result = true;
       if (item == Fabricators?.OutpostMedFabricator) __result = true;

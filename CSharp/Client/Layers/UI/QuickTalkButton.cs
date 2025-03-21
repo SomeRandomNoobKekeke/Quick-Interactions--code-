@@ -15,6 +15,7 @@ namespace QuickInteractions
 {
   public class QuickTalkButton : CUIHorizontalList
   {
+    [Dependency] public static Debugger Debugger { get; set; }
     public static float MotinorScale = 1.0f;
     public static Point IconTextureSize = new Point(139, 75);
     public static float IconProportions = (float)IconTextureSize.X / (float)IconTextureSize.Y;
@@ -30,7 +31,7 @@ namespace QuickInteractions
     {
       if (character.IsDead) return new Color(255, 0, 0);
 
-      return character.CampaignInteractionType switch
+      Color cl = character.CampaignInteractionType switch
       {
         CampaignMode.InteractionType.Talk => new Color(255, 255, 255),
         CampaignMode.InteractionType.Examine => character.HumanPrefab?.Identifier.Value switch
@@ -55,6 +56,11 @@ namespace QuickInteractions
         CampaignMode.InteractionType.MedicalClinic => new Color(255, 130, 130),
         _ => Color.White,
       };
+
+      // Ye,ok, doesn't work in multiplayer
+      Debugger.Log($"Interaction: {character.CampaignInteractionType} Id:{character.HumanPrefab?.Identifier.Value} Color:{character}", DebugLevel.ButtonColor);
+
+      return cl;
     }
 
     public static CUISprite GetIcon(Character character)

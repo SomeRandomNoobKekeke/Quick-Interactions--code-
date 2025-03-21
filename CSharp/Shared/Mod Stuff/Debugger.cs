@@ -22,6 +22,7 @@ namespace QuickInteractions
     UIRefresh = 2,
     Performance = 4,
     Networking = 8,
+    ButtonColor = 16,
   }
 
   public enum DebugAdditionalPrint

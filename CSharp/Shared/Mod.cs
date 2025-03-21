@@ -72,7 +72,7 @@ namespace QuickInteractions
       sw3.Stop();
 
       Debugger.Debug = Paths.IsInLocalMods;
-      //Debugger.CurrentLevel = DebugLevel.PatchExecuted;
+      //Debugger.CurrentLevel = DebugLevel.ButtonColor;
 
       Debugger.Log($"AddCommands took {sw1.ElapsedMilliseconds}ms", DebugLevel.Performance);
       Debugger.Log($"CUI.Initialize() took {sw2.ElapsedMilliseconds}ms", DebugLevel.Performance);

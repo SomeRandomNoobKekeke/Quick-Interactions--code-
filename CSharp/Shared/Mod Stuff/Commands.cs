@@ -37,6 +37,12 @@ namespace QuickInteractions
         Mod.Log($"Quick interactions Debug = {Mod.Instance.Debugger.Debug}");
       }));
 
+      // AddedCommands.Add(new DebugConsole.Command("qi_simulate_round_start", "", (string[] args) =>
+      // {
+      //   if (Mod.Instance == null) return;
+      //   GameStageTracker.Instance?.InvokeOnRoundStartOrInitialize();
+      // }));
+
       DebugConsole.Commands.InsertRange(0, AddedCommands);
     }
 

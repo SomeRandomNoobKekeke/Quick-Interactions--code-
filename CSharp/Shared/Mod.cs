@@ -49,6 +49,8 @@ namespace QuickInteractions
     {
       Stopwatch sw1 = Stopwatch.StartNew();
       Instance = this;
+
+      GhostDetector.Activate();
       AddCommands();
 
       Paths = new ModPaths(Name);
@@ -131,7 +133,7 @@ namespace QuickInteractions
       RemoveCommands();
       Debouncer.Dispose();
 
-      Mod.Harmony.UnpatchAll(Mod.Harmony.Id);
+      Mod.Harmony.UnpatchSelf();
       Disposed = true;
       //Instance = null;
     }

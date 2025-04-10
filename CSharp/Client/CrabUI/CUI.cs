@@ -257,7 +257,7 @@ namespace QICrabUI
       {
         RemoveCommands();
         // harmony.UnpatchAll(harmony.Id);
-        harmony.UnpatchAll();
+        harmony.UnpatchSelf();
         TextureManager.Dispose();
         CUIDebugEventComponent.CapturedIDs.Clear();
         OnDispose?.Invoke();

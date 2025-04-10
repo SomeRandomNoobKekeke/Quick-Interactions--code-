@@ -34,7 +34,7 @@ namespace QuickInteractions
       GameMain.LuaCs.Hook.Add("character.created", Mod.Name, (object[] args) =>
       {
         Debugger.Log("character.created", DebugLevel.PatchExecuted);
-        if (GhostDetector.AmIDead(Mod.Instance)) return null;
+        if (GhostDetector.Check()) return null;
 
         Character __instance = args.ElementAtOrDefault(0) as Character;
         if (!Utils.IsThisAnOutpost) return null;
@@ -51,7 +51,7 @@ namespace QuickInteractions
       GameMain.LuaCs.Hook.Add("character.death", Mod.Name, (object[] args) =>
       {
         Debugger.Log("character.death", DebugLevel.PatchExecuted);
-        if (GhostDetector.AmIDead(Mod.Instance)) return null;
+        if (GhostDetector.Check()) return null;
 
         Character __instance = args.ElementAtOrDefault(0) as Character;
 
@@ -90,7 +90,7 @@ namespace QuickInteractions
 
     public static void CampaignMode_AssignNPCMenuInteraction_Postfix(Character character, CampaignMode.InteractionType interactionType)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("CampaignMode_AssignNPCMenuInteraction_Postfix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance.OnCustomInteractSet?.Invoke(null);
@@ -98,7 +98,7 @@ namespace QuickInteractions
 
     public static void Character_Constructor_Postfix(Character __instance)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("Character_Constructor_Postfix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance.OnCharacterCreated?.Invoke(__instance);
@@ -106,7 +106,7 @@ namespace QuickInteractions
 
     public static void Character_Kill_Prefix(Character __instance)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("Character_Kill_Prefix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       if (!__instance.IsDead) Instance.OnCharacterKilled?.Invoke(__instance);
@@ -114,7 +114,7 @@ namespace QuickInteractions
 
     public static void Character_Revive_Postfix(Character __instance)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("Character_Revive_Postfix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance?.OnCharacterKilled?.Invoke(__instance);
@@ -122,7 +122,7 @@ namespace QuickInteractions
 
     public static void Character_Despawn_Postfix(Character __instance, bool createNetworkEvents = true)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("Character_Despawn_Postfix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance?.OnCharacterDespawned?.Invoke(__instance);
@@ -130,7 +130,7 @@ namespace QuickInteractions
 
     public static void Character_SetCustomInteract_Postfix(Character __instance, Action<Character, Character> onCustomInteract, LocalizedString hudText)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log("Character_SetCustomInteract_Prefix", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance?.OnCustomInteractSet?.Invoke(__instance);
@@ -138,7 +138,7 @@ namespace QuickInteractions
 
     public static void ConversationAction_ResetSpeaker_Postfix(ConversationAction __instance)
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Debugger.Log($"ConversationAction_ResetSpeaker_Postfix {__instance.Speaker}", DebugLevel.PatchExecuted);
       if (!Utils.IsThisAnOutpost) return;
       Instance?.OnConversationEnded?.Invoke(__instance.Speaker);

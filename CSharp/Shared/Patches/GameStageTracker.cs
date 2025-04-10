@@ -27,48 +27,48 @@ namespace QuickInteractions
 
     public static void Initialize()
     {
-      // Mod.Harmony.Patch(
-      //   original: typeof(GameSession).GetMethod("StartRound", AccessTools.all, new Type[]{
-      //       typeof(LevelData),
-      //       typeof(bool),
-      //       typeof(SubmarineInfo),
-      //       typeof(SubmarineInfo),
-      //     }
-      //   ),
-      //   postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_StartRound_Postfix"))
-      // );
+      Mod.Harmony.Patch(
+        original: typeof(GameSession).GetMethod("StartRound", AccessTools.all, new Type[]{
+            typeof(LevelData),
+            typeof(bool),
+            typeof(SubmarineInfo),
+            typeof(SubmarineInfo),
+          }
+        ),
+        postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_StartRound_Postfix"))
+      );
 
-      // Mod.Harmony.Patch(
-      //   original: typeof(GameSession).GetMethod("EndRound", AccessTools.all),
-      //   postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_EndRound_Postfix"))
-      // );
+      Mod.Harmony.Patch(
+        original: typeof(GameSession).GetMethod("EndRound", AccessTools.all),
+        postfix: new HarmonyMethod(typeof(GameStageTracker).GetMethod("GameSession_EndRound_Postfix"))
+      );
 
-      GameMain.LuaCs.Hook.Add("roundStart", Mod.Name, (object[] args) =>
-      {
-        Debugger.Log("roundStart", DebugLevel.PatchExecuted);
-        Instance?.OnRoundStart?.Invoke();
-        Instance?.OnRoundStartOrInitialize?.Invoke();
-        return null;
-      });
+      // GameMain.LuaCs.Hook.Add("roundStart", Mod.Name, (object[] args) =>
+      // {
+      //   Debugger.Log("roundStart", DebugLevel.PatchExecuted);
+      //   Instance?.OnRoundStart?.Invoke();
+      //   Instance?.OnRoundStartOrInitialize?.Invoke();
+      //   return null;
+      // });
 
-      GameMain.LuaCs.Hook.Add("roundEnd", Mod.Name, (object[] args) =>
-      {
-        Debugger.Log("roundEnd", DebugLevel.PatchExecuted);
-        Instance?.OnRoundEnd?.Invoke();
-        return null;
-      });
+      // GameMain.LuaCs.Hook.Add("roundEnd", Mod.Name, (object[] args) =>
+      // {
+      //   Debugger.Log("roundEnd", DebugLevel.PatchExecuted);
+      //   Instance?.OnRoundEnd?.Invoke();
+      //   return null;
+      // });
     }
 
     public static void GameSession_StartRound_Postfix()
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Instance?.OnRoundStart?.Invoke();
       Instance?.OnRoundStartOrInitialize?.Invoke();
     }
 
     public static void GameSession_EndRound_Postfix()
     {
-      if (GhostDetector.AmIDead(Mod.Instance)) return;
+      if (GhostDetector.Check()) return;
       Instance?.OnRoundEnd?.Invoke();
     }
   }

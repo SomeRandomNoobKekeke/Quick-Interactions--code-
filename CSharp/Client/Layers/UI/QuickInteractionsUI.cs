@@ -30,6 +30,7 @@ namespace QuickInteractions
       get => textVisible;
       set
       {
+        if (blocked) return;
         if (textVisible == value) return;
         textVisible = value;
 
@@ -94,6 +95,11 @@ namespace QuickInteractions
       LoadSelfFromFile(SavePath);
     }
 
+
+    /// <summary>
+    /// Prevent TextVisible = true until you move the mouse out of the frame
+    /// </summary>
+    public bool blocked;
     public override void Hydrate()
     {
       OnDrag += (x, y) =>
@@ -119,11 +125,15 @@ namespace QuickInteractions
         });
       };
 
+      OnMouseLeave += (e) => blocked = false;
       OnMouseOn += (e) => TextVisible = MouseOver;
       OnMouseOff += (e) => TextVisible = MouseOver;
 
       AddCommand("interact", (o) =>
       {
+        TextVisible = false;
+        blocked = true;
+
         if (o is Character character)
         {
           QuickTalk.InteractWith(character);

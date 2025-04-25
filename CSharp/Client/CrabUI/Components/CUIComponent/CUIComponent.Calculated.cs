@@ -119,12 +119,26 @@ namespace QICrabUI
       set => SetReal(value);
     }
 
+    //HACK
+    /// <summary>
+    /// This property was added in Quickinteractions to make panman shut up
+    /// It still needs to be tested in main CUI, it don't believe it just works
+    /// </summary>
+    [Calculated]
+    public CUIRect RoundedReal { get; private set; }
+
 
 
     private CUIRect real; internal void SetReal(CUIRect value, [CallerMemberName] string memberName = "")
     {
-      //HACK idk if i need it
       real = new CUIRect(
+        (float)Math.Round(value.Left),
+        (float)Math.Round(value.Top),
+        (float)Math.Round(value.Width),
+        (float)Math.Round(value.Height)
+      );
+
+      RoundedReal = new CUIRect(
         (float)Math.Round(value.Left),
         (float)Math.Round(value.Top),
         (float)Math.Round(value.Width),

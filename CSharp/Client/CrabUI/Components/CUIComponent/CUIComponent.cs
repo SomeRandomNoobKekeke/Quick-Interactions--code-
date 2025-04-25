@@ -137,7 +137,7 @@ namespace QICrabUI
 
     public virtual partial void Draw(SpriteBatch spriteBatch)
     {
-      if (BackgroundVisible) CUI.DrawRectangle(spriteBatch, Real, BackgroundColor * Transparency, BackgroundSprite);
+      if (BackgroundVisible) CUI.DrawRectangle(spriteBatch, RoundedReal, BackgroundColor * Transparency, BackgroundSprite);
 
       CUI.DrawBorders(spriteBatch, this);
       // if (Border.Visible) GUI.DrawRectangle(spriteBatch, BorderBox.Position, BorderBox.Size, Border.Color, thickness: Border.Thickness);
@@ -152,7 +152,7 @@ namespace QICrabUI
     {
       if (DebugHighlight)
       {
-        GUI.DrawRectangle(spriteBatch, Real.Position, Real.Size, Color.Cyan * 0.5f, isFilled: true);
+        GUI.DrawRectangle(spriteBatch, RoundedReal.Position, RoundedReal.Size, Color.Cyan * 0.5f, isFilled: true);
       }
     }
 

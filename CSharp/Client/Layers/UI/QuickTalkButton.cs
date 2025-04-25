@@ -106,18 +106,18 @@ namespace QuickInteractions
       {
         if (value)
         {
-          this["textWrapper"].Absolute = new CUINullRect(null, null, null, null);
-          this["textWrapper"].Ghost = new CUIBool2(false, false);
-          this["textWrapper"].Revealed = true;
+          this["text"].Absolute = new CUINullRect(null, null, null, null);
+          this["text"].Ghost = new CUIBool2(false, false);
+          this["text"].Revealed = true;
           //if (Text.Parent == null) Append(Text);
         }
         else
         {
           //if (Text.Parent != null) RemoveChild(Text);
           //Text.GhostText = true;
-          this["textWrapper"].Revealed = false;
-          this["textWrapper"].Ghost = new CUIBool2(true, false);
-          this["textWrapper"].Absolute = new CUINullRect(null, null, null, 0);
+          this["text"].Revealed = false;
+          this["text"].Ghost = new CUIBool2(true, false);
+          this["text"].Absolute = new CUINullRect(null, null, null, 0);
         }
       }
     }
@@ -160,16 +160,11 @@ namespace QuickInteractions
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(character),
         TextScale = TextScale,
-        Anchor = CUIAnchor.Center,
+        BackgroundColor = CUIExtensions.RandomColor(),
       };
 
-      this["textWrapper"] = new CUIComponent()
-      {
-        FitContent = new CUIBool2(true, true),
-      };
 
-      this["textWrapper"]["text"] = Text;
-      // this["text"] = Text;
+      this["text"] = Text;
 
       this.character = character;
 

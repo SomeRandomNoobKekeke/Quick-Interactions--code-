@@ -97,6 +97,9 @@ namespace QuickInteractions
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(item),
         TextScale = QuickTalkButton.TextScale,
+        Revealed = false,
+        Ghost = new CUIBool2(true, false),
+        Absolute = new CUINullRect(null, null, null, 0),
       };
 
 

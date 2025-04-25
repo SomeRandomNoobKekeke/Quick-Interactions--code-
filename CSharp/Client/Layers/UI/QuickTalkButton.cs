@@ -106,11 +106,18 @@ namespace QuickInteractions
       {
         if (value)
         {
-          if (Text.Parent == null) Append(Text);
+          this["textWrapper"].Absolute = new CUINullRect(null, null, null, null);
+          this["textWrapper"].Ghost = new CUIBool2(false, false);
+          this["textWrapper"].Revealed = true;
+          //if (Text.Parent == null) Append(Text);
         }
         else
         {
-          if (Text.Parent != null) RemoveChild(Text);
+          //if (Text.Parent != null) RemoveChild(Text);
+          //Text.GhostText = true;
+          this["textWrapper"].Revealed = false;
+          this["textWrapper"].Ghost = new CUIBool2(true, false);
+          this["textWrapper"].Absolute = new CUINullRect(null, null, null, 0);
         }
       }
     }
@@ -122,8 +129,15 @@ namespace QuickInteractions
     {
       FitContent = new CUIBool2(true, true);
       Direction = direction;
+      //ResizeToHostHeight = false;
 
-      this["icon"] = Icon = new CUIButton()
+      //To place it in center and prevent rescale
+      this["iconWrapper"] = new CUIComponent()
+      {
+        FitContent = new CUIBool2(true, true),
+      };
+
+      this["iconWrapper"]["icon"] = Icon = new CUIButton()
       {
         Text = "",
         Border = new CUIBorder(),
@@ -131,6 +145,7 @@ namespace QuickInteractions
         MasterColorOpaque = GetButtonColor(character),
         //ResizeToSprite = true,
         Absolute = IconSize,
+        Anchor = CUIAnchor.Center,
       };
 
       Icon.OnMouseDown += (e) =>
@@ -138,13 +153,23 @@ namespace QuickInteractions
         DispatchUp(new CUICommand("interact", character));
       };
 
+
+
       Text = new CUITextBlock("")
       {
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(character),
         TextScale = TextScale,
-        Ghost = new CUIBool2(false, true),
+        Anchor = CUIAnchor.Center,
       };
+
+      this["textWrapper"] = new CUIComponent()
+      {
+        FitContent = new CUIBool2(true, true),
+      };
+
+      this["textWrapper"]["text"] = Text;
+      // this["text"] = Text;
 
       this.character = character;
 

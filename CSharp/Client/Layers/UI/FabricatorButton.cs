@@ -53,11 +53,18 @@ namespace QuickInteractions
       {
         if (value)
         {
-          if (Text.Parent == null) Append(Text);
+          this["textWrapper"].Absolute = new CUINullRect(null, null, null, null);
+          this["textWrapper"].Ghost = new CUIBool2(false, false);
+          this["textWrapper"].Revealed = true;
+          //if (Text.Parent == null) Append(Text);
         }
         else
         {
-          if (Text.Parent != null) RemoveChild(Text);
+          //if (Text.Parent != null) RemoveChild(Text);
+          //Text.GhostText = true;
+          this["textWrapper"].Revealed = false;
+          this["textWrapper"].Ghost = new CUIBool2(true, false);
+          this["textWrapper"].Absolute = new CUINullRect(null, null, null, 0);
         }
       }
     }
@@ -70,6 +77,12 @@ namespace QuickInteractions
       FitContent = new CUIBool2(true, true);
       Direction = direction;
 
+      //To place it in center and prevent rescale
+      this["iconWrapper"] = new CUIComponent()
+      {
+        FitContent = new CUIBool2(true, false),
+      };
+
       this["icon"] = Icon = new CUIButton()
       {
         Text = "",
@@ -78,6 +91,7 @@ namespace QuickInteractions
         MasterColorOpaque = GetButtonColor(item),
         Absolute = QuickTalkButton.IconSize,
         //ResizeToSprite = true,
+        Anchor = CUIAnchor.Center,
       };
 
       Icon.OnMouseDown += (e) =>
@@ -90,8 +104,16 @@ namespace QuickInteractions
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(item),
         TextScale = QuickTalkButton.TextScale,
-        Ghost = new CUIBool2(false, true),
+        Anchor = CUIAnchor.Center,
       };
+
+      this["textWrapper"] = new CUIComponent()
+      {
+        FitContent = new CUIBool2(true, true),
+      };
+
+      this["textWrapper"]["text"] = Text;
+      // this["text"] = Text;
 
       this.item = item;
     }

@@ -106,18 +106,18 @@ namespace QuickInteractions
       {
         if (value)
         {
-          this["text"].Absolute = new CUINullRect(null, null, null, null);
-          this["text"].Ghost = new CUIBool2(false, false);
-          this["text"].Revealed = true;
+          Text.Absolute = new CUINullRect(null, null, null, null);
+          Text.Ghost = new CUIBool2(false, false);
+          Text.Revealed = true;
           //if (Text.Parent == null) Append(Text);
         }
         else
         {
           //if (Text.Parent != null) RemoveChild(Text);
           //Text.GhostText = true;
-          this["text"].Revealed = false;
-          this["text"].Ghost = new CUIBool2(true, false);
-          this["text"].Absolute = new CUINullRect(null, null, null, 0);
+          Text.Revealed = false;
+          Text.Ghost = new CUIBool2(true, false);
+          Text.Absolute = new CUINullRect(null, null, null, 0);
         }
       }
     }
@@ -132,12 +132,7 @@ namespace QuickInteractions
       //ResizeToHostHeight = false;
 
       //To place it in center and prevent rescale
-      this["iconWrapper"] = new CUIComponent()
-      {
-        FitContent = new CUIBool2(true, true),
-      };
-
-      this["iconWrapper"]["icon"] = Icon = new CUIButton()
+      this["icon"] = Icon = new CUIButton()
       {
         Text = "",
         Border = new CUIBorder(),
@@ -145,7 +140,9 @@ namespace QuickInteractions
         MasterColorOpaque = GetButtonColor(character),
         //ResizeToSprite = true,
         Absolute = IconSize,
-        Anchor = CUIAnchor.Center,
+        //this will make it keep proportions, but it won't fit in the gap between crew list and left border, at least on 100% hud scale
+        // Relative = new CUINullRect(h:1),
+        // CrossRelative = new CUINullRect(w: IconProportions),
       };
 
       Icon.OnMouseDown += (e) =>
@@ -153,18 +150,12 @@ namespace QuickInteractions
         DispatchUp(new CUICommand("interact", character));
       };
 
-
-
-      Text = new CUITextBlock("")
+      this["text"] = Text = new CUITextBlock("")
       {
         TextAlign = CUIAnchor.CenterLeft,
         Text = GetInteractionText(character),
         TextScale = TextScale,
-        BackgroundColor = CUIExtensions.RandomColor(),
       };
-
-
-      this["text"] = Text;
 
       this.character = character;
 

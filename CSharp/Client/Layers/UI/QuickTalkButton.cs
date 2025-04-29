@@ -100,6 +100,11 @@ namespace QuickInteractions
         }
       }
 
+      if (TrackTriggerAction.Mapping.ContainsKey(character))
+      {
+        InteractionText = TrackTriggerAction.Mapping[character].Prefab.Identifier.Value;
+      }
+
       string pname = character.HumanPrefab?.Identifier.Value;
       bool isAManager = pname != null && pname.Contains("outpostmanager");
 

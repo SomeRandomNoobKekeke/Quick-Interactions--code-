@@ -87,6 +87,19 @@ namespace QuickInteractions
     {
       string InteractionText = TextManager.Get("CampaignInteraction." + character.CampaignInteractionType).ToString().Replace("[[key]]", "");
 
+
+      if (character.ActiveConversation != null && character.ActiveConversation != null)
+      {
+        if (character.ActiveConversation.ParentEvent.Prefab.Identifier.Value.Contains("unlockpath"))
+        {
+          InteractionText = "Unlock Path";
+        }
+        if (character.ActiveConversation.ParentEvent.Prefab.Identifier.Value.Contains("missionevent"))
+        {
+          InteractionText = TextManager.Get("mission").ToString();
+        }
+      }
+
       string pname = character.HumanPrefab?.Identifier.Value;
       bool isAManager = pname != null && pname.Contains("outpostmanager");
 

@@ -74,7 +74,7 @@ namespace QuickInteractions
         __result = false; return false;
       }
 
-      if (__instance.IsPlayer && c.IsHuman) { __result = true; return false; }
+      if (__instance.IsPlayer && c.IsHuman && !c.IsOnPlayerTeam) { __result = true; return false; }
 
       if (!skipDistanceCheck)
       {

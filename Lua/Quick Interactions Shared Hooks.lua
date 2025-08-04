@@ -1,9 +1,6 @@
-require "Hooks"
-
-
 -- It works, but i think it's too slow
 -- I think i should prefer in game performance to load time
-EnsurePatch("Barotrauma.Character", "CanInteractWith", {
+QuickInteractions.EnsurePatch("Barotrauma.Character", "CanInteractWith", {
     "Barotrauma.Item",
     "System.Single&",
     "System.Boolean"
